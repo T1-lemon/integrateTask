@@ -1,0 +1,124 @@
+.taskDetail__box--container {
+    padding: 0 10px;
+}
+.taskDetail__box--header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+#taskDetail__icon--header {
+    font-size: 14px;
+    width: 130px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+#taskDetail__icon--header:hover {
+    color: #58A182;
+    background-color: #E0F4EC;
+    border-color: #58A182;
+}
+
+.taskDetail__input--taskName .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+	border-radius: 10px;
+	font-weight: bold;
+	font-size: 20px;
+    width: 100%;
+    margin-top: 15px;
+
+}
+
+.taskDetail__input--taskName .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+	border-color: white;
+}
+
+.taskDetail__input--taskName input {
+    padding: 15px 10px 10px 10px ;
+}
+
+.taskDetail__box--body {
+    padding: 0 10px;
+}
+
+.taskDetail__box--content {
+    display: flex;
+    align-items: center;
+}
+
+.taskDetail__box--form {
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.taskDetail__box--form:hover {
+    background-color: #F9F8F8;
+    cursor: pointer;
+}
+
+.taskDetail__box--noAssignee:hover .taskDetail__icon--assignee {
+    color: #535252 !important;
+    border-color: #535252;
+}
+
+.taskDetail__box--noAssignee:hover .taskDetail__typo--assignee {
+    color: #535252 !important;
+}
+.taskDetail__icon {
+    font-size: 21px !important;
+    border: 1px dashed #959595;
+    border-radius: 15px;
+    padding: 3px;
+    color: #959595 !important;
+    margin-right: 10px;
+}
+
+.taskDetail__typo {
+    font-size: 13px !important;
+    color: #959595;
+}
+
+.taskDetail__box--dueDate {
+    margin-top: 15px;
+}
+
+.taskDetail__box--noDueDate:hover .taskDetail__icon--dueDate {
+    color: #535252 !important;
+    border-color: #535252;
+}
+
+.taskDetail__box--noDueDate:hover .taskDetail__typo--dueDate {
+    color: #535252 !important;
+}
+
+.taskDetail__icon--dueDate {
+    font-size: 13px !important;
+    padding: 7px !important;
+}
+
+.taskDetail__box--createdOn {
+    margin-top: 15px;
+}
+
+.taskDetail__box--description {
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.taskDetail__box--typo {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.taskDetail__box--description {
+    margin-top: 15px;
+}
+
+.taskDetail__box--typo .taskDetail__typo {
+    margin-bottom: 10px;
+}

@@ -1,0 +1,268 @@
+/* css priority */
+.dropMenu--priority {
+    position: relative;
+}
+
+.dropItem__block {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 7px 5px;
+}
+
+.dropItem__block:hover {
+	background-color: #F9F8F8;
+}
+
+.dropItem__block--hidden {
+    position: absolute;
+    top: 36px;
+    width: 110%;
+    background-color: #fff;
+    z-index: 1;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    border: 1px solid #CFCBCB;
+    padding: 3px 0;
+    border-radius: 5px;
+}
+
+.dropItem__typography {
+    /* width: 40%; */
+    text-align: center;
+    border-radius: 15px;
+    color: #fff;
+    text-transform: capitalize;
+    font-size: 13px !important;
+    margin-left: 15px !important;
+    cursor: pointer;
+}
+
+.dropItem__typography--none {
+    color: gray;
+}
+
+.dropItem__typography--high {
+    background-color: #F06A6A;
+    margin-left: 10px;
+    width: 45px;
+}
+
+.dropItem__typography--medium {
+    background-color: #F8DF72;
+    margin-left: 10px;
+    width: 62px;
+
+}
+
+.dropItem__typography--low {
+    background-color: #4ECBC4;
+    margin-left: 10px;
+    width: 42px;
+
+}
+
+/* css due date */
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+    border: none !important;
+}
+
+.css-1o7apob-MuiGrid-root {
+    display: flex;
+    cursor: pointer;
+}
+
+.css-1o7apob-MuiGrid-root:hover {
+    background-color: #F9F8F8;
+}
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    justify-content: center !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 0 0 0 10px !important;
+    font-size: 13px !important;
+    cursor: pointer;
+}
+
+/* css assignee */
+.dropMenu--assignee:hover .dropItem__avatar--assigneeshow {
+    color: #39393B;
+}
+
+.dropItem__block--assigneeshow {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.dropItem__block--assigneeshow:hover .dropItem__avatar--assigneeshow {
+    display: block !important;
+}
+
+.dropItem__avatar--assigneeshow {
+    color: #757677 !important;
+    font-size: 19px !important;
+    display: none  !important;
+}
+
+.dropItem__avatar--assigneeshow:hover {
+    color: #39393B !important;
+}
+
+/*css task name*/
+.taskName__container {
+    background-color: #fff;
+}
+
+.taskName__block {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.taskName__block:hover {
+	background-color: #F9F8F8;
+}
+
+.taskName__block--input {
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+
+
+.taskName__block:hover .taskName__input {
+    border: 1px solid gray;
+}
+
+.taskName__input {
+    border: none;
+    width: auto;
+}
+
+.taskName__input:focus {
+    outline: none;
+    border: none !important;
+}
+
+.taskName__input:focus + .css__focus {
+    display: block;
+}
+
+.css__focus {
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.taskName__input[type='text'] {
+    font-size: 14px;
+    color: #39393B;
+    padding-top: 2px;
+}
+
+.taskName__block:hover .taskName__button--viewDetails {
+    display: flex;
+    align-items: center;
+    padding: 3px;
+}
+
+.taskName__button--viewDetails {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    z-index: 1;
+}
+
+.taskName__typography--viewDetails {
+    font-size: 11px !important;
+    color: #757677;
+}
+
+.taskName__icon--viewDetails {
+    font-size: 11px !important;
+    color: #757677;
+}
+
+.taskName__button--viewDetails:hover {
+    background-color: #EBEBF5;
+    border-radius: 10px;
+}
+.taskName__button--viewDetails:hover > .taskName__typography--viewDetails {
+    color: #39393B;
+    font-weight: bold;
+}
+
+.taskName__button--viewDetails:hover > .taskName__icon--viewDetails {
+    color: #39393B;
+    font-weight: bold;
+}
+
+#title__icon--hover {
+    color: #7B7C7C !important;
+}
+
+#title__icon--hover:hover {
+    color: #39393B !important;
+}
+/*Add Task below*/
+.addTask__block--below {
+    cursor: pointer;
+    padding: 5px 30px;
+}
+
+.addTask__block--below:hover {
+    background-color: #F9F8F8;
+}
+
+.addTask__typography--below {
+    font-size: 14px !important;
+    color: #7B7C7C;
+}
+/*due date*/
+.dueDate__calendar {
+    position: relative;
+}
+
+.dueDate__block--show {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.dueDate__block--show:hover .dueDate__icon--show {
+    display: block !important;
+}
+
+.dueDate__icon--show {
+    margin-left: 10px;
+    color: #7B7C7C;
+    font-size: 18px !important;
+    display: none !important;
+}
+
+.dueDate__icon--show:hover {
+    color: #39393B;
+}
+
+.dueDate__typography--show {
+    font-size: 13px !important;
+    margin-left: 10px !important;
+}
+
+/*task details*/
+
+.taskDetails__form--block .css-1160xiw-MuiPaper-root-MuiDrawer-paper {
+    width: 40% !important;
+    top: 103px !important;
+}
