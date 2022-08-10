@@ -13,11 +13,16 @@ import DoneIcon from '@mui/icons-material/Done';
 import Button from '@mui/material/Button';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import '../TaskDetail/taskDetail.css';
-import ButtonProjectList from '../utils/ButtonProjectList';
+import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
 import MenuStatus from '../priority/MenuStatus';
+import { updateTitleTaskApi } from '../../../redux/actions/TaskAction';
+import AvatarAssignee from '../../../components/assignee/AvatarAssignee';
+import AssigneeForm from '../../../components/assignee/AssigneeForm';
 
 const styles = {
 	icon: {
@@ -25,13 +30,51 @@ const styles = {
 	},
 };
 
+const splitDate = date => {
+	const cloneDate = date;
+	return cloneDate.slice(0, 10);
+};
+
 export default function TaskDetail(props) {
-	const { onClickButton, task } = props;
+	const {
+		onClickButton,
+		task,
+		onEditTitleTask,
+		onPressKeyTitleTask,
+		onChangeTitleTask,
+		onClickAssignee,
+	} = props;
+	const dispatch = useDispatch();
+	const {
+		_id,
+		taskStatus,
+		taskName,
+		assigneTo,
+		startDate,
+		dueDate,
+		createdBy,
+		priorityValue,
+	} = task;
+	const splitStartDate = startDate ? splitDate(startDate) : '';
+	const splitDueDate = dueDate ? splitDate(dueDate) : '';
+	const createdByName = createdBy ? createdBy.username : '';
+	const username = assigneTo !== null ? assigneTo.username : '';
+	const currentWorkSpace = useSelector(
+		state => state.WorkspaceReducer.currentWorkSpace
+	);
+	const membersWorkspace =
+		currentWorkSpace && currentWorkSpace.members ? currentWorkSpace.members : [];
+
 	const [dropAssignee, setDropAssignee] = useState(false);
+
+	const handleDropAssignee = () => {
+		setDropAssignee(!dropAssignee);
+	};
 
 	const handleClickAwayAssignee = () => {
 		setDropAssignee(false);
 	};
+
 	return (
 		<Box role='presentation' className='taskDetail__box--container'>
 			<Box className='taskDetail__box--header'>
@@ -56,7 +99,10 @@ export default function TaskDetail(props) {
 				}}
 				placeholder={'Write a section name'}
 				className='taskDetail__input--taskName'
-				defaultValue={task.task_name}
+				defaultValue={taskName}
+				onBlur={onEditTitleTask}
+				onKeyPress={onPressKeyTitleTask}
+				onChange={onChangeTitleTask}
 			/>
 			<Box className='taskDetail__box--body'>
 				<ClickAwayListener onClickAway={handleClickAwayAssignee}>
@@ -65,13 +111,35 @@ export default function TaskDetail(props) {
 							Assignee
 						</Typography>
 						<Box>
-							<Box className='taskDetail__box--form taskDetail__box--noAssignee'>
-								<PermIdentityIcon className='taskDetail__icon taskDetail__icon--assignee' />
-								<Typography className='taskDetail__typo taskDetail__typo--assignee'>
-									No assignee
-								</Typography>
-							</Box>
-							<Box></Box>
+							<ClickAwayListener onClickAway={handleClickAwayAssignee}>
+								<>
+									<Box
+										onClick={handleDropAssignee}
+										className='dropItem__block--assigneeshow'
+									>
+										{username ? (
+											<Box className='assignee__box--show'>
+												<AvatarAssignee assignee={username} />
+												<Typography className='assignee__typo--show'>{username}</Typography>
+											</Box>
+										) : (
+											<Box className='taskDetail__box--form taskDetail__box--noAssignee'>
+												<PermIdentityIcon className='taskDetail__icon taskDetail__icon--assignee' />
+												<Typography className='taskDetail__typo taskDetail__typo--assignee'>
+													No assignee
+												</Typography>
+											</Box>
+										)}
+									</Box>
+									<Box>
+										<AssigneeForm
+											memberArr={membersWorkspace}
+											onClickAssignee={onClickAssignee}
+											isDrop={dropAssignee}
+										/>
+									</Box>
+								</>
+							</ClickAwayListener>
 						</Box>
 					</Box>
 				</ClickAwayListener>
@@ -114,7 +182,7 @@ export default function TaskDetail(props) {
 							maxRows={4}
 							aria-label='maximum height'
 							placeholder='Add text description'
-							style={{ width: '100%'}}
+							style={{ width: '100%' }}
 						/>
 					</Box>
 				</Box>

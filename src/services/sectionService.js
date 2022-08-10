@@ -18,7 +18,7 @@ export const addSectionService = async newSection => {
 		const respone = await requestApi({
 			method: 'post',
 			url: 'section',
-			data : {...newSection}
+			data: { ...newSection },
 		});
 		return respone;
 	} catch (error) {
@@ -27,30 +27,44 @@ export const addSectionService = async newSection => {
 	}
 };
 
-export const updateTitleSectionService = async dataSection =>{
+export const updateTitleSectionService = async dataSection => {
 	try {
 		const respone = await requestApi({
 			method: 'put',
 			url: 'section/3',
-			data : {...dataSection}
+			data: { ...dataSection },
 		});
 		return respone;
 	} catch (error) {
 		console.log(error.response);
 		// return error.response;
 	}
-}
+};
 
-export const archiveSectionService = async sectionId =>{
+export const archiveSectionService = async sectionId => {
 	try {
 		const respone = await requestApi({
 			method: 'put',
 			url: 'section/2',
-			data : {sectionId:sectionId}
+			data: { sectionId: sectionId },
 		});
 		return respone;
 	} catch (error) {
 		console.log(error.response);
 		// return error.response;
 	}
-}
+};
+
+export const updateTaskOrderInSection = async data => {
+	try {
+		const respone = await requestApi({
+			method: 'put',
+			url: 'section',
+			data: { taskOrder: data.newTaskOrder, sectionId: data.sectionId },
+		});
+		return respone;
+	} catch (error) {
+		console.log(error.response);
+		// return error.response;
+	}
+};

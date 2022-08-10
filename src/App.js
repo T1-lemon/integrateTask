@@ -12,7 +12,6 @@ import store from './redux/configStore';
 import LoadingPageWorkspace from './pages/LoadingPage/LoadingPageWorkspace.js';
 import BlankProject from './pages/BlankProject/BlankProject';
 import BoardView from './pages/ProjectBoardView/BoardView';
-import ProjectListView from './pages/ProjectListView/ProjectListView';
 import ProjectListPage from './pages/ProjectListPage/ProjectListPage'
 import './assets/css/resetCss.css';
 

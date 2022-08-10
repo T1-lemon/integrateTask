@@ -1,6 +1,5 @@
 import { Box, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
-import ButtonProjectList from '../utils/ButtonProjectList';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -11,6 +10,7 @@ import {
 	MODAL_ACTION_CLOSE,
 	MODAL_ACTION_CONFIRM,
 } from '../../../constants/constants';
+import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
 
 const styles = {
 	textTitle: {

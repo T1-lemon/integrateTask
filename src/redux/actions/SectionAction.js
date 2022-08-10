@@ -4,6 +4,7 @@ import {
 	archiveSectionService,
 	getAllSectionService,
 	updateTitleSectionService,
+	updateTaskOrderInSection,
 } from '../../services/sectionService';
 
 import { GET_ALL_SECTION_API } from '../types/SectionTypes';
@@ -68,5 +69,14 @@ export const archiveSectionApi = sectionId => {
 	return async dispatch => {
 		const { data } = await archiveSectionService(sectionId);
 		dispatch(getAllSectionApi(data.projectId));
+	};
+};
+
+export const updateTaskOrderInSectionApi = (newTaskOrder, sectionId) => {
+	const data = { newTaskOrder, sectionId };
+	return async (dispatch) => {
+		const result = await updateTaskOrderInSection(data);
+		// console.log(result);
+		dispatch(getAllSectionApi(result.data.projectId))
 	};
 };

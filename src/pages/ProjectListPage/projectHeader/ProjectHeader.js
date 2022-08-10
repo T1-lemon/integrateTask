@@ -5,7 +5,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useState } from 'react';
 
 import './projectHeader.css';
-import ButtonProjectList from '../utils/ButtonProjectList';
+import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
 
 export default function ProjectHeader() {
 	const [dropFilter, setDropFilter] = useState(false);

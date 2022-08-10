@@ -1,6 +1,5 @@
 import { Box, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
-import ButtonProjectList from '../utils/ButtonProjectList';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -19,6 +18,7 @@ import {
 import { deleteSectionAction } from '../../../redux/actions/ProjectAction';
 import ConfirmModal from '../../../components/Modal/ConfirmModal';
 import { archiveSectionApi, updateTitleSectionApi } from '../../../redux/actions/SectionAction';
+import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
 
 const styles = {
 	textTitle: {
@@ -92,7 +92,6 @@ export default function ProjectSectionForm(props) {
 	};
 
 	const handleKeyPress = value => {
-		console.log(value.key);
 		if (value.key === 'Enter') {
 			searchInput.current.blur();
 		}

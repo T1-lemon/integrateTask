@@ -10,6 +10,8 @@
     width: 260px;
     flex-direction: column;
     align-items: center;
+
+   
 }
 
 .header__block--input {
@@ -40,7 +42,7 @@
 }
 
 .css-1cnkspq {
-    min-height: 205px !important;
+    min-height: 154px !important;
 }
 
 .css-1v994a0 {

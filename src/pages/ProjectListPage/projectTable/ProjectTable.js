@@ -6,7 +6,6 @@ import { Container, Draggable } from 'react-smooth-dnd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { initDataProjectList } from '../mook/initDataProjectList';
 import ProjectSection from '../projectSection/ProjectSection';
 import { applyDrag } from '../utils/DragAndDrop';
 import { mapOrder } from '../../../utils/sort';
@@ -17,7 +16,7 @@ import {
 	updateDropSection,
 	updateDropSectionApi,
 } from '../../../redux/actions/ProjectAction';
-import { getAllSectionApi } from '../../../redux/actions/SectionAction';
+import { getAllSectionApi, updateTaskOrderInSectionApi } from '../../../redux/actions/SectionAction';
 import {
 	getAllTaskInProjectApi,
 	getAllTaskOrderAction,
@@ -90,44 +89,13 @@ export default function ProjectTable() {
 		dispatch(updateDropSection(newSectionOrder));
 	};
 
-	// goi tung api len vidu co 2 lan update thi no se goi 2 lan api
 	const handleTaskDrop = (dropResult, section, taskList) => {
-		const { removedIndex, addedIndex, payload } = dropResult;
-
-		// console.log('payload', payload)
-		// if (removedIndex !== null || addedIndex !== null) {
-		// 	console.log(
-		// 		'>> inside task drop',
-		// 		dropResult,
-		// 		'with section',
-		// 		section._id
-		// 	);
-		// 	let newTasks = applyDrag(taskList, dropResult);
-		// 	let newTaskOrder = newTasks.map(task => task._id);
-
-		// 	console.log('>>>current tasks ', newTasks);
-		// 	console.log('>>>current taskOder ', newTaskOrder);
-		// 	console.log('>>>current section_id', section.section_id);
-		// 	dispatch(updateDropTask(section._id,payload));
-
-		// }
-		// if(removedIndex !== null) {
-		// 	console.log('removedIndex')
-		// }
+		const { addedIndex, payload } = dropResult;
 		if(addedIndex !== null) {
-			console.log(
-				'>> inside task drop',
-				dropResult,
-				'with section',
-				section._id
-			);
 			let newTasks = applyDrag(taskList, dropResult);
 			let newTaskOrder = newTasks.map(task => task._id);
-
-			console.log('>>>current tasks ', newTasks);
-			console.log('>>>current taskOder ', newTaskOrder);
-			console.log('>>>current section_id', section._id);
 			dispatch(updateDropTask(section._id, newTaskOrder, payload));
+			dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id))
 		}
 	};
 

@@ -11,10 +11,11 @@
 }
 
 .col__avatar {
-	width: 25px !important;
-	height: 25px !important;
-	font-size: 13px !important;
+	width: 24px !important;
+	height: 24px !important;
+	font-size: 12px !important;
 	margin: 0 10px;
+    color: #4e4b4b !important;
 }
 
 .col__block--content {
@@ -35,11 +36,11 @@
 
 .col__typo--userName {
 	margin-right: 10px !important;
-	font-size: 14px !important;
+	font-size: 13px !important;
 }
 
 .col_typo--email {
-	font-size: 12px !important;
+	font-size: 11px !important;
 	width: auto !important;
 	cursor: pointer;
 	color: rgb(103, 103, 103);

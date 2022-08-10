@@ -13,21 +13,30 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DragIndicatorSharpIcon from '@mui/icons-material/DragIndicatorSharp';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import Drawer from '@mui/material/Drawer';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './projectTask.css';
-import AvatarAssignee from '../assignee/AvatarAssignee';
-import AssigneeForm from '../assignee/AssigneeForm';
+import AvatarAssignee from '../../../components/assignee/AvatarAssignee';
+import AssigneeForm from '../../../components/assignee/AssigneeForm';
 import MenuStatus from '../priority/MenuStatus';
-import ButtonProjectList from '../utils/ButtonProjectList';
-import DueDateForm from '../duedate/DueDateForm';
+import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
+import DueDateForm from '../../../components/duedate/DueDateForm';
 import TaskDetail from '../TaskDetail/TaskDetail';
+import {
+	assignTaskApi,
+	completeTaskApi,
+	updatePriorityTaskApi,
+	updateTitleTaskApi,
+} from '../../../redux/actions/TaskAction';
+import { showDate } from '../../../utils/date';
+import { priorityArr, priorityMenu } from '../../../utils/priorityStatus';
 
 const styles = {
 	task: {
 		border: '1px solid #CFCBCB',
 		borderLeft: 'none',
-		fontSize: '13px',
+		fontSize: '14px',
 	},
 	icon: {
 		fontSize: '15px',
@@ -37,45 +46,21 @@ const styles = {
 		justifyContent: 'space',
 	},
 };
-const MembersWorkspace = [
-	'toan211@gmail.com',
-	'ly@gmail.com',
-	'hoang@gmai.com',
-];
-
-const priorityArr = ['none', 'high', 'medium', 'low'];
-
-const priorityMenu = [
-	{
-		nameClass: 'dropItem__typography dropItem__typography--none',
-		text: 'none',
-	},
-	{
-		nameClass: 'dropItem__typography dropItem__typography--high',
-		text: 'high',
-	},
-	{
-		nameClass: 'dropItem__typography dropItem__typography--medium',
-		text: 'medium',
-	},
-	{
-		nameClass: 'dropItem__typography dropItem__typography--low',
-		text: 'low',
-	},
-];
 
 const convertNumber = (arr, value) => {
 	const arrCopy = [...arr];
 	return arrCopy.indexOf(value);
 };
 
-const splitDate = (date) => {
-	const cloneDate = date
-	cloneDate.splice()
-}
+const splitDate = date => {
+	const cloneDate = date;
+	return cloneDate.slice(0, 10);
+};
+
 export default function ProjectTask(props) {
-	const { task } = props;
+	const { task, sectionId } = props;
 	const {
+		_id,
 		taskStatus,
 		taskName,
 		assigneTo,
@@ -85,27 +70,87 @@ export default function ProjectTask(props) {
 		priorityValue,
 	} = task;
 
-	console.log('start date', startDate)
-	console.log('due date', dueDate)
-	const [startDateCalendar, setStartDateCalendar] = useState('');
-	const [dueDateCalendar, setDueDateCalendar] = useState('');
-	const [isFocusDueDate, setIsFocusDueDate] = useState(true);
+	const dispatch = useDispatch();
+	const splitStartDate = startDate ? splitDate(startDate) : '';
+	const splitDueDate = dueDate ? splitDate(dueDate) : '';
+	const createdByName = createdBy ? createdBy.username : '';
+	const currentWorkSpace = useSelector(
+		state => state.WorkspaceReducer.currentWorkSpace
+	);
+	const membersWorkspace =
+		currentWorkSpace && currentWorkSpace.members ? currentWorkSpace.members : [];
+	const username = assigneTo !== null ? assigneTo.username : '';
 
-	const [dropDueDate, setDropDueDate] = useState(true);
+	const [stateTaskName, setStateTaskName] = useState(taskName);
+	const [dropDueDate, setDropDueDate] = useState(false);
 
 	const [dropPriority, setDropPriority] = useState(true);
-	const [priority, setPriority] = useState(task.priority);
 
-	const [dropAssignee, setDropAssignee] = useState(true);
+	const [dropAssignee, setDropAssignee] = useState(false);
 
-	const [assignee, setAssignee] = useState(task.assigne_to);
-
-	const [isChecked, setIsChecked] = useState(task.status);
+	const [isChecked, setIsChecked] = useState(taskStatus);
 	const [state, setState] = useState({
 		right: false,
 	});
+
+	const taskTitleInput = useRef(null);
 	const toggleDrawer = () => event => {
 		setState({ ...state, right: !state.right });
+	};
+
+	const handelChangeCheckedStatus = e => {
+		setIsChecked(e.target.checked);
+		dispatch(completeTaskApi(_id));
+	};
+
+	const handlePressKeyTitleTask = value => {
+		if (value.key === 'Enter') {
+			value.target.blur();
+		}
+	};
+
+	const handleEditTitleTask = e => {
+		const titleTask = e.target.value;
+		const titleTaskEdit = !titleTask.trim() ? 'Untitled task' : titleTask;
+		dispatch(updateTitleTaskApi(_id, titleTaskEdit));
+
+		e.target.value = titleTaskEdit
+	};	
+
+	const handleChangeTitleTask = e => {
+		const titleTask = e.target.value;
+		const titleTaskEdit = !titleTask.trim() ? 'Untitled task' : titleTask;
+		setStateTaskName(titleTaskEdit)
+	}
+
+	const handleDropAssignee = () => {
+		setDropAssignee(!dropAssignee);
+	};
+
+	const handleClickAwayAssignee = () => {
+		setDropAssignee(false);
+	};
+
+	const handleClickAssignee = member => {
+		const taskUpdate = {
+			...task,
+			assigneTo: {
+				...task.assigneTo,
+				username: member.username,
+				email: member.email,
+			},
+		};
+
+		setDropAssignee(false);
+		dispatch(assignTaskApi(taskUpdate));
+	};
+
+	const handelDropDueDate = () => {
+		setDropDueDate(!dropDueDate);
+	};
+
+	const handleClickAwayDueDate = () => {
+		setDropDueDate(false);
 	};
 
 	const handleDropPriority = () => {
@@ -117,60 +162,12 @@ export default function ProjectTask(props) {
 			priorityArr,
 			e.target.outerText.toLowerCase()
 		);
-		setPriority(numberStatus.toString());
 		setDropPriority(true);
-	};
-
-	const handleDropAssignee = () => {
-		setDropAssignee(!dropAssignee);
-	};
-
-	const handleClickAwayAssignee = () => {
-		setDropAssignee(true);
-	};
-
-	const handleClickAssignee = value => {
-		setAssignee(value);
-		setDropAssignee(true);
-	};
-
-	const handelChangeCheckedStatus = e => {
-		setIsChecked(e.target.checked);
-	};
-
-	const handelDropDueDate = () => {
-		setDropDueDate(!dropDueDate);
-	};
-
-	const showDueDate = (startDate, dueDate) => {
-		console.log(startDate);
-		if (startDate || dueDate) {
-			const valueStartDate = startDate.slice(4, 10);
-			const valueDueDate = dueDate.slice(4, 10);
-			const date = `${valueStartDate} - ${valueDueDate}`;
-			return date;
-		}
-		return '';
-	};
-
-	const handleClickStartDate = () => {
-		setIsFocusDueDate(true);
-	};
-
-	const handleClickDueDate = () => {
-		setIsFocusDueDate(false);
-	};
-
-	const handleChangeDueDate = value => {
-		const newDueDate = value.toString().slice(0, 15);
-		console.log(newDueDate);
-		if (isFocusDueDate) {
-			setStartDateCalendar(newDueDate);
-			setIsFocusDueDate(false);
-			return;
-		}
-		setDueDateCalendar(newDueDate);
-		setIsFocusDueDate(true);
+		const taskUpdate = {
+			...task,
+			priorityValue: numberStatus.toString(),
+		};
+		dispatch(updatePriorityTaskApi(taskUpdate));
 	};
 
 	return (
@@ -186,11 +183,11 @@ export default function ProjectTask(props) {
 					<Checkbox
 						label='CheckCircleOutlineIcon'
 						icon={<CheckCircleOutlineIcon sx={{ width: '18px' }} />}
-						checkedIcon={<CheckCircleIcon sx={{ color: '#368E6A', width: '18px' }} />}
+						checkedIcon={<CheckCircleIcon sx={{ color: '#008000', width: '18px' }} />}
 						inputProps={{ 'aria-label': 'controlled' }}
 						sx={{
 							zIndex: '2',
-							'&:hover': { color: '#368E6A !important' },
+							'&:hover': { color: '#008000 !important' },
 							px: 0,
 							py: 0,
 							mr: 1,
@@ -198,7 +195,16 @@ export default function ProjectTask(props) {
 						checked={isChecked}
 						onClick={handelChangeCheckedStatus}
 					/>
-					<input type='text' defaultValue={taskName} className='taskName__input' />
+					<input
+						type='text'
+						// defaultValue={stateTaskName}
+						value={stateTaskName}
+						className='taskName__input'
+						onKeyPress={handlePressKeyTitleTask}
+						onBlur={handleEditTitleTask}
+						ref={taskTitleInput}
+						onChange={handleChangeTitleTask}
+					/>
 					<Box className='css__focus'></Box>
 				</Box>
 				<React.Fragment>
@@ -214,7 +220,14 @@ export default function ProjectTask(props) {
 						onClose={toggleDrawer()}
 						className='taskDetails__form--block'
 					>
-						<TaskDetail onClickButton={toggleDrawer()} task={task} />
+						<TaskDetail
+							onClickButton={toggleDrawer()}
+							onEditTitleTask={handleEditTitleTask}
+							onPressKeyTitleTask={handlePressKeyTitleTask}
+							onChangeTitleTask={handleChangeTitleTask}
+							onClickAssignee={handleClickAssignee}
+							task={task}
+						/>
 					</Drawer>
 				</React.Fragment>
 			</Grid>
@@ -231,15 +244,18 @@ export default function ProjectTask(props) {
 							onClick={handleDropAssignee}
 							className='dropItem__block--assigneeshow'
 						>
-							{assignee ? (
-								<AvatarAssignee assignee={assignee} />
+							{username ? (
+								<Box className='assignee__box--show'>
+									<AvatarAssignee assignee={username} />
+									<Typography className='assignee__typo--show'>{username}</Typography>
+								</Box>
 							) : (
 								<AccountBoxIcon className='dropItem__avatar--assigneeshow' />
 							)}
 						</Box>
 						<Box>
 							<AssigneeForm
-								memberArr={MembersWorkspace}
+								memberArr={membersWorkspace}
 								onClickAssignee={handleClickAssignee}
 								isDrop={dropAssignee}
 							/>
@@ -248,34 +264,35 @@ export default function ProjectTask(props) {
 				</Grid>
 			</ClickAwayListener>
 
-			<Grid
-				item
-				xs={2}
-				align='right'
-				style={styles.task}
-				className='dueDate__calendar'
-			>
-				<Box onClick={handelDropDueDate} className='dueDate__block--show'>
-					{startDateCalendar || dueDateCalendar ? (
-						<Typography className='dueDate__typography--show'>
-							{showDueDate(startDateCalendar, dueDateCalendar)}
-						</Typography>
-					) : (
-						<CalendarTodayIcon className='dueDate__icon--show' />
-					)}
-				</Box>
-				<DueDateForm
-					dropDueDate={dropDueDate}
-					startDate={startDateCalendar}
-					dueDate={dueDateCalendar}
-					isFocusDueDate={isFocusDueDate}
-					onClickStartDate={handleClickStartDate}
-					onClickDueDate={handleClickDueDate}
-					onChangeDueDate={handleChangeDueDate}
-				/>
-			</Grid>
+			<ClickAwayListener onClickAway={handleClickAwayDueDate}>
+				<Grid
+					item
+					xs={2}
+					align='right'
+					style={styles.task}
+					className='dueDate__calendar'
+				>
+					<Box onClick={handelDropDueDate} className='dueDate__block--show'>
+						{splitStartDate || splitDueDate ? (
+							<Typography className='dueDate__typography--show'>
+								{showDate(splitStartDate, splitDueDate)}
+							</Typography>
+						) : (
+							<CalendarTodayIcon className='dueDate__icon--show' />
+						)}
+					</Box>
+					<DueDateForm
+						dropDueDate={dropDueDate}
+						startDate={splitStartDate}
+						dueDate={splitDueDate}
+						task={task}
+						handleClickAwayDueDate={handleClickAwayDueDate}
+					/>
+				</Grid>
+			</ClickAwayListener>
+
 			<Grid item xs={2} align='right' style={{ ...styles.task, padding: '10px' }}>
-				{task.created_by}
+				{createdByName}
 			</Grid>
 			<Grid
 				item
@@ -286,7 +303,7 @@ export default function ProjectTask(props) {
 				<MenuStatus
 					onDrop={handleDropPriority}
 					drop={dropPriority}
-					status={priority}
+					status={priorityValue}
 					statusArr={priorityArr}
 					menu={priorityMenu}
 					onClickStatus={handleClickPriority}

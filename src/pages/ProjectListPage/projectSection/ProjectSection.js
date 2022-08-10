@@ -11,7 +11,7 @@ import ProjectSectionForm from './ProjectSectionForm';
 import ProjectAddSectionForm from './ProjectAddSectionForm';
 import { addSectionLeftRightAction } from '../../../redux/actions/ProjectAction';
 import { addSectionLeftRightApi } from '../../../redux/actions/SectionAction';
-
+import ProjectAddTaskForm from '../projectTask/ProjectAddTaskForm';
 const styles = {
 	textTitle: {
 		cursor: 'pointer',
@@ -63,8 +63,6 @@ export default function ProjectSection(props) {
 		taskInSection && taskOrderInSection
 			? mapOrder(taskInSection, taskOrderInSection, '_id')
 			: [];
-	
-	console.log('task list', taskList)
 
 	const handleClickExpandButton = () => {
 		setIsExpand(!isExpand);
@@ -112,6 +110,7 @@ export default function ProjectSection(props) {
 
 		let indexAddSection = indexSection + checkAboveBelow;
 
+		console.log('indexAddSection', indexAddSection);
 		dispatch(addSectionLeftRightApi(newSection, sectionOrder, indexAddSection));
 		setAddSectionAbove(false);
 		setAddSectionBelow(false);
@@ -138,45 +137,52 @@ export default function ProjectSection(props) {
 					onClickAddSectionBelow={handleAddSectionBelow}
 				/>
 			</Grid>
+			<Box display={isAddTaskAbove ? 'block' : 'none'}>
+					<ProjectAddTaskForm
+						onClickAddTask={handleClickAddTaskAbove}
+						taskOrderInSection={taskOrderInSection}
+						taskOrderInProject={taskOrders}
+						sectionId={section._id}
+						projectId={section.projectId}
+					/>
+			</Box>
 			<Box
 				display={isExpand ? 'block' : 'none'}
 				style={styles.titleBlockAfterActive}
 				className='task__container'
 			>
-				<Container
-					groupName='col'
-					onDrop={dropResult => onTaskDrop(dropResult, section, taskList)}
-					getChildPayload={index => taskList[index]}
-					dragClass='opacity-ghost-x'
-					dropClass='opacity-ghost-drop-x'
-					dropPlaceholder={{
-						animationDuration: 150,
-						showOnTop: true,
-						className: 'drop-preview',
-					}}
-					dropPlaceholderAnimationDuration={200}
-					dragHandleSelector='.row-drag-handle'
-				>
-					{taskList.map(task => {
-						return (
-							<Draggable key={task._id}>
-								<ProjectTask task={task} />
-							</Draggable>
-						);
-					})}
-				</Container>
 				<Box>
+					<Container
+						groupName='col'
+						onDrop={dropResult => onTaskDrop(dropResult, section, taskList)}
+						getChildPayload={index => taskList[index]}
+						dragClass='opacity-ghost-x'
+						dropClass='opacity-ghost-drop-x'
+						dropPlaceholder={{
+							animationDuration: 150,
+							showOnTop: true,
+							className: 'drop-preview',
+						}}
+						dropPlaceholderAnimationDuration={200}
+						dragHandleSelector='.row-drag-handle'
+					>
+						{taskList.map(task => {
+							return (
+								<Draggable key={task._id}>
+									<ProjectTask task={task} sectionId={section._id} />
+								</Draggable>
+							);
+						})}
+					</Container>
+				</Box>
+				<Box display={taskList.length === 0 ? 'none' : 'block'}>
 					<Box display={isAddTaskBelow ? 'block' : 'none'}>
-						<ProjectTask
-							task={{
-								task_id: null,
-								task_name: '',
-								assignee_to: [],
-								due_date: '',
-								priority: null,
-								created_by: '',
-								task_progress: null,
-							}}
+						<ProjectAddTaskForm
+							onClickAddTask={handleClickAddTaskBelow}
+							isAddTaskBelow={isAddTaskBelow}
+							taskOrderInSection={taskOrderInSection}
+							sectionId={section._id}
+							projectId={section.projectId}
 						/>
 					</Box>
 					<Box className='addTask__block--below' onClick={handleClickAddTaskBelow}>
@@ -185,11 +191,11 @@ export default function ProjectSection(props) {
 						</Typography>
 					</Box>
 				</Box>
-				<ProjectAddSectionForm
-					isDisplay={isAddSectionBelow}
-					onSubmit={handleAddSectionSubmit}
-				/>
 			</Box>
+			<ProjectAddSectionForm
+				isDisplay={isAddSectionBelow}
+				onSubmit={handleAddSectionSubmit}
+			/>
 		</>
 	);
 }
