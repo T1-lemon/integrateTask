@@ -1,6 +1,6 @@
 .dueDate__block {
-    position: absolute;
-    top: 37px;
+    /* position: absolute; */
+    /* top: 37px; */
     background-color: #fff;
     z-index: 5;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);

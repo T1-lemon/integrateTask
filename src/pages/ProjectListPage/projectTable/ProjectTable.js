@@ -16,7 +16,10 @@ import {
 	updateDropSection,
 	updateDropSectionApi,
 } from '../../../redux/actions/ProjectAction';
-import { getAllSectionApi, updateTaskOrderInSectionApi } from '../../../redux/actions/SectionAction';
+import {
+	getAllSectionApi,
+	updateTaskOrderInSectionApi,
+} from '../../../redux/actions/SectionAction';
 import {
 	getAllTaskInProjectApi,
 	getAllTaskOrderAction,
@@ -33,12 +36,22 @@ const headerTable = [
 ];
 
 const styles = {
-	headerTable: {
+	headerTitleTable: {
 		border: '1px solid #CFCBCB',
 		borderLeft: 'none',
 		fontSize: '13px',
 		padding: '10px',
 	},
+	headerTable: {
+		position: 'fixed',
+		top: '120px',
+		// right: '0',
+		zIndex: '5',
+		background: '#fff',
+	},
+	bodyTable: {
+		marginTop: '150px',
+	}
 };
 export default function ProjectTable() {
 	const dispatch = useDispatch();
@@ -55,7 +68,7 @@ export default function ProjectTable() {
 
 	const tasks = useSelector(state => state.TaskReducer.arrTask);
 	const taskOrders = useSelector(state => state.TaskReducer.taskOrders);
-	
+
 	useEffect(() => {
 		async function fetchData() {
 			if (projectId) {
@@ -72,7 +85,7 @@ export default function ProjectTable() {
 		dispatchArrTaskOrder(sections);
 	}, [sections]);
 
-	const dispatchArrTaskOrder = (sections) => {
+	const dispatchArrTaskOrder = sections => {
 		const taskOrderInProject = sections.map(section => {
 			const sectionId = section._id;
 			const taskOrder = section.taskOrder;
@@ -91,41 +104,41 @@ export default function ProjectTable() {
 
 	const handleTaskDrop = (dropResult, section, taskList) => {
 		const { addedIndex, payload } = dropResult;
-		if(addedIndex !== null) {
+		if (addedIndex !== null) {
 			let newTasks = applyDrag(taskList, dropResult);
 			let newTaskOrder = newTasks.map(task => task._id);
 			dispatch(updateDropTask(section._id, newTaskOrder, payload));
-			dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id))
+			dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id));
 		}
 	};
 
 	return (
 		<Box sx={{ mt: 2 }}>
-			<Box>
-				<Grid container>
-					<Grid item xs={4} style={styles.headerTable}>
+			<Box >
+				<Grid container style={styles.headerTable} drawerWidth='240px'>
+					<Grid item xs={4} style={styles.headerTitleTable}>
 						Task name
 					</Grid>
-					<Grid item xs={2} align='right' style={styles.headerTable}>
+					<Grid item xs={2} align='right' style={styles.headerTitleTable}>
 						Assignees
 					</Grid>
-					<Grid item xs={2} align='right' style={styles.headerTable}>
+					<Grid item xs={2} align='right' style={styles.headerTitleTable}>
 						Due date
 					</Grid>
-					<Grid item xs={2} align='right' style={styles.headerTable}>
+					<Grid item xs={2} align='right' style={styles.headerTitleTable}>
 						Created by
 					</Grid>
 					<Grid
 						item
 						xs={2}
 						align='right'
-						style={{ ...styles.headerTable, borderRight: 'none' }}
+						style={{ ...styles.headerTitleTable, borderRight: 'none' }}
 					>
 						Priority
 					</Grid>
 				</Grid>
 			</Box>
-			<Box>
+			<Box sx={styles.bodyTable}>
 				<Container
 					onDrop={handleSectionDrop}
 					dragHandleSelector='.row-drag-handle'

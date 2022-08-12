@@ -16,7 +16,7 @@ export const showDateInDateInput = value => {
 	if (value) {
 		const day = value.slice(8, 10);
 		const month = value.slice(4, 7);
-		const year = value.slice(11,15);
+		const year = value.slice(11, 15);
 		const newMonth = monthAbbreviate.indexOf(month).toString();
 		const date = `${year}-0${newMonth}-${day}`;
 		return date;
@@ -48,4 +48,77 @@ export const showDate = (startDate, dueDate) => {
 		return date;
 	}
 	return '';
+};
+
+export const filterDate = (taskList, filterDueDate) => {
+	const currentDay = new Date();
+	switch (filterDueDate) {
+		case 'Due Before Today':
+			const yeseteday = new Date();
+			yeseteday.setDate(currentDay.getDate() - 1);
+			taskList = taskList.filter(item => {
+				const dueDate = new Date(item.dueDate);
+				return (
+					dueDate.getDate() === yeseteday.getDate() &&
+					dueDate.getMonth() === yeseteday.getMonth() &&
+					dueDate.getFullYear() === yeseteday.getFullYear()
+				);
+			});
+			return taskList;
+		case 'Due Today':
+			const today = new Date();
+			taskList = taskList.filter(item => {
+				const dueDate = new Date(item.dueDate);
+				return (
+					dueDate.getDate() === today.getDate() &&
+					dueDate.getMonth() === today.getMonth() &&
+					dueDate.getFullYear() === today.getFullYear()
+				);
+			});
+			return taskList;
+		case 'Due Tomorrow':
+			const tomorrow = new Date();
+			tomorrow.setDate(currentDay.getDate() + 1);
+			taskList = taskList.filter(item => {
+				const dueDate = new Date(item.dueDate);
+				return (
+					dueDate.getDate() === tomorrow.getDate() &&
+					dueDate.getMonth() === tomorrow.getMonth() &&
+					dueDate.getFullYear() === tomorrow.getFullYear()
+				);
+			});
+			return taskList;
+		case 'Due This Week':
+			const firstDayOfWeek = new Date();
+			const lastDayOfWeek = new Date();
+			firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay());
+			lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+			taskList = taskList.filter(item => {
+				const dueDate = new Date(item.dueDate);
+				return (
+					firstDayOfWeek.getDate() <= dueDate.getDate() &&
+					dueDate.getDate() <= lastDayOfWeek.getDate() &&
+					dueDate.getMonth() === currentDay.getMonth() && 
+					dueDate.getFullYear() === currentDay.getFullYear()
+				);
+			});
+			return taskList;
+		case 'Due Next Week':
+			const firstDayOfNextWeek = new Date();
+			const lastDayOfNextWeek = new Date();
+			firstDayOfNextWeek.setDate(firstDayOfNextWeek.getDate() - firstDayOfNextWeek.getDay() + 7);
+			lastDayOfNextWeek.setDate(firstDayOfNextWeek.getDate() + 6);
+			taskList = taskList.filter(item => {
+				const dueDate = new Date(item.dueDate);
+				return (
+					firstDayOfNextWeek.getDate() <= dueDate.getDate() &&
+					dueDate.getDate() <= lastDayOfNextWeek.getDate() &&
+					dueDate.getMonth() === currentDay.getMonth() && 
+					dueDate.getFullYear() === currentDay.getFullYear()
+				);
+			});
+			return taskList;
+		default:
+			return taskList;
+	}
 };

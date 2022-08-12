@@ -5,8 +5,8 @@ import ProjectTable from './projectTable/ProjectTable';
 
 export default function ProjectListPage() {
 	return (
-		<Box>
-			<ProjectHeader />
+		<Box sx={{position: 'relative'}}>
+			<ProjectHeader/>
 			<ProjectTable />
 		</Box>
 	);

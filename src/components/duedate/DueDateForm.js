@@ -11,7 +11,7 @@ import ButtonProjectList from '../../components/ButtonProjectList/ButtonProjectL
 import { setDateTaskApi } from '../../redux/actions/TaskAction';
 
 export default function DueDateForm(props) {
-	const { dropDueDate, startDate, dueDate, task,handleClickAwayDueDate } = props;
+	const {startDate, dueDate, task,onClosePopover } = props;
 
 	const dispatch = useDispatch();
 
@@ -55,12 +55,12 @@ export default function DueDateForm(props) {
 			startDate: startDateCalendar,
 			dueDate: dueDateCalendar,
 		};
-		handleClickAwayDueDate();
+		onClosePopover();
 		dispatch(setDateTaskApi(taskUpdate));
 	};
 
 	return (
-		<Box display={dropDueDate ? 'flex' : 'none'} className='dueDate__block'>
+		<Box className='dueDate__block'>
 			<Box className='header__block--input'>
 				<TextField
 					onClick={handleClickStartDate}

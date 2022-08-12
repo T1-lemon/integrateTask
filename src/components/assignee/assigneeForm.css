@@ -2,9 +2,9 @@
 	background-color: #fff;
 	z-index: 1;
 	width: 330px;
-	position: absolute;
-	top: 36px;
-	left: 0;
+	/* position: absolute; */
+	/* top: 36px; */
+	/* left: 0; */
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 	border: 1px solid #edeae9;
 	border-radius: 5px;

@@ -24,7 +24,6 @@ export const getAllTaskInProjectApi = projectId => {
 };
 
 export const getAllTaskOrderAction = taskOrderInProject => {
-	console.log('get', taskOrderInProject)
 	let action = {
 		type: GET_ALL_TASK_ORDER_IN_PROJECT,
 		taskOrderInProject,
@@ -57,6 +56,7 @@ export const completeTaskApi = taskId => {
 	return async dispatch => {
 		const result = await completeTaskService(taskId);
 
+		console.log('result', result)
 		dispatch(getAllTaskInProjectApi(result.data.projectId));
 	};
 };
@@ -93,13 +93,10 @@ export const createTaskApi = (
 	return async dispatch => {
 		const { data } = await createTaskService(taskCreate);
 		const newTaskOrderInSection = taskOrderInSection;
-		// console.log('section id', data.sectionId)
-		// console.log('task order before', newTaskOrderInSection)
-		// console.log('isAddTask', isAddTask)
+
 		isAddTask === 1
 			? newTaskOrderInSection.push(data._id)
 			: newTaskOrderInSection.splice(0,0,data._id);
-		// console.log('new task order', newTaskOrderInSection)
 		dispatch(updateTaskOrderInSectionApi(newTaskOrderInSection, data.sectionId));
 		dispatch(getAllTaskInProjectApi(data.projectId));
 	};

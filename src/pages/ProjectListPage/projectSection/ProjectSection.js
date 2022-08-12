@@ -12,6 +12,8 @@ import ProjectAddSectionForm from './ProjectAddSectionForm';
 import { addSectionLeftRightAction } from '../../../redux/actions/ProjectAction';
 import { addSectionLeftRightApi } from '../../../redux/actions/SectionAction';
 import ProjectAddTaskForm from '../projectTask/ProjectAddTaskForm';
+import { filterDate } from '../../../utils/date';
+
 const styles = {
 	textTitle: {
 		cursor: 'pointer',
@@ -32,8 +34,57 @@ const styles = {
 		borderRadius: '10px',
 		border: '1px solid grey',
 	},
+	addTask: {
+		borderTop: '1px solid #CFCBCB',
+	},
 };
 
+const filterTaskList = (taskList, filterSelector) => {
+	const filterCustom = filterSelector.filterCustom;
+	const keyfilterSelector = Object.keys(filterCustom);
+	const valuefilterSelector = Object.values(filterCustom);
+	const currentValue = valuefilterSelector.filter(item => item !== '');
+	const indexCurrentValue = valuefilterSelector.indexOf(currentValue[0]);
+	const currentKeyfilterSelector = keyfilterSelector[indexCurrentValue];
+
+	const currentfilterStatus = filterSelector.filterStatus;
+	console.log(currentKeyfilterSelector, currentValue[0], valuefilterSelector);
+	let cloneTaskList = taskList;
+	cloneTaskList = cloneTaskList.length
+		? currentfilterStatus !== 2
+			? cloneTaskList.filter(item => item.taskStatus == currentfilterStatus)
+			: cloneTaskList
+		: cloneTaskList;
+
+	let newTaskList = cloneTaskList.length
+		? cloneTaskList.filter(item => item[currentKeyfilterSelector] !== null)
+		: [];
+
+	switch (currentKeyfilterSelector) {
+		case 'assigneTo':
+			return (newTaskList = currentValue[0]
+				? newTaskList.filter(
+						item => item[currentKeyfilterSelector]._id === currentValue[0]
+				  )
+				: taskList);
+		case 'createdBy':
+			return (newTaskList = currentValue[0]
+				? newTaskList.filter(
+						item => item[currentKeyfilterSelector]._id === currentValue[0]
+				  )
+				: taskList);
+		case 'priorityValue':
+			return (newTaskList = currentValue[0]
+				? newTaskList.filter(
+						item => item[currentKeyfilterSelector] === currentValue[0]
+				  )
+				: taskList);
+		case 'dueDate':
+			return filterDate(newTaskList, currentValue[0]);
+		default:
+			return (newTaskList = cloneTaskList);
+	}
+};
 export default function ProjectSection(props) {
 	const { section, indexSection, tasks, taskOrders, onTaskDrop } = props;
 	const dispatch = useDispatch();
@@ -41,6 +92,8 @@ export default function ProjectSection(props) {
 	const { sectionOrder, _id } = useSelector(
 		state => state.ProjectReducer.currentProject
 	);
+
+	const filterSelector = useSelector(state => state.filterReducer);
 
 	const [isExpand, setIsExpand] = useState(true);
 	const [isAddTaskAbove, setIsAddTaskAbove] = useState(false);
@@ -53,6 +106,12 @@ export default function ProjectSection(props) {
 		? tasks.filter(item => item.sectionId === section._id)
 		: [];
 
+	// const newTaskInSection = taskInSection.length
+	// 	? taskInSection.filter(item => item.sectionId === '""62f3555ae9a466911d545ae5""')
+	// 	: [];
+
+	// const newTaskInSection = taskInSection.length ? taskInSection[0].assigneTo._id : ''
+
 	const taskOrderInSection = taskOrders
 		? taskOrders.find(item => item.sectionId === section._id)
 			? taskOrders.find(item => item.sectionId === section._id).taskOrder
@@ -64,6 +123,7 @@ export default function ProjectSection(props) {
 			? mapOrder(taskInSection, taskOrderInSection, '_id')
 			: [];
 
+	const newTaskList = filterTaskList(taskList, filterSelector);
 	const handleClickExpandButton = () => {
 		setIsExpand(!isExpand);
 	};
@@ -138,13 +198,13 @@ export default function ProjectSection(props) {
 				/>
 			</Grid>
 			<Box display={isAddTaskAbove ? 'block' : 'none'}>
-					<ProjectAddTaskForm
-						onClickAddTask={handleClickAddTaskAbove}
-						taskOrderInSection={taskOrderInSection}
-						taskOrderInProject={taskOrders}
-						sectionId={section._id}
-						projectId={section.projectId}
-					/>
+				<ProjectAddTaskForm
+					onClickAddTask={handleClickAddTaskAbove}
+					taskOrderInSection={taskOrderInSection}
+					taskOrderInProject={taskOrders}
+					sectionId={section._id}
+					projectId={section.projectId}
+				/>
 			</Box>
 			<Box
 				display={isExpand ? 'block' : 'none'}
@@ -166,7 +226,7 @@ export default function ProjectSection(props) {
 						dropPlaceholderAnimationDuration={200}
 						dragHandleSelector='.row-drag-handle'
 					>
-						{taskList.map(task => {
+						{newTaskList.map(task => {
 							return (
 								<Draggable key={task._id}>
 									<ProjectTask task={task} sectionId={section._id} />
@@ -175,7 +235,7 @@ export default function ProjectSection(props) {
 						})}
 					</Container>
 				</Box>
-				<Box display={taskList.length === 0 ? 'none' : 'block'}>
+				<Box display={newTaskList.length === 0 ? 'none' : 'block'}>
 					<Box display={isAddTaskBelow ? 'block' : 'none'}>
 						<ProjectAddTaskForm
 							onClickAddTask={handleClickAddTaskBelow}
@@ -185,7 +245,11 @@ export default function ProjectSection(props) {
 							projectId={section.projectId}
 						/>
 					</Box>
-					<Box className='addTask__block--below' onClick={handleClickAddTaskBelow}>
+					<Box
+						className='addTask__block--below'
+						onClick={handleClickAddTaskBelow}
+						sx={styles.addTask}
+					>
 						<Typography className='addTask__typography--below'>
 							Add task...
 						</Typography>

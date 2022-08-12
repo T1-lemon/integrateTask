@@ -1,27 +1,16 @@
 import React from 'react';
-import {
-	Box,
-	Checkbox,
-	ClickAwayListener,
-	Grid,
-	Typography,
-} from '@mui/material';
+import { Box, Checkbox, Grid, Typography } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DragIndicatorSharpIcon from '@mui/icons-material/DragIndicatorSharp';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import Drawer from '@mui/material/Drawer';
 import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './projectTask.css';
-import AvatarAssignee from '../../../components/assignee/AvatarAssignee';
-import AssigneeForm from '../../../components/assignee/AssigneeForm';
 import MenuStatus from '../priority/MenuStatus';
 import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
-import DueDateForm from '../../../components/duedate/DueDateForm';
 import TaskDetail from '../TaskDetail/TaskDetail';
 import {
 	assignTaskApi,
@@ -29,13 +18,16 @@ import {
 	updatePriorityTaskApi,
 	updateTitleTaskApi,
 } from '../../../redux/actions/TaskAction';
-import { showDate } from '../../../utils/date';
 import { priorityArr, priorityMenu } from '../../../utils/priorityStatus';
+import AssigneeBox from '../AssigneeBox';
+import DueDateBox from '../DueDateBox';
+import PriorityBox from '../PriorityBox';
 
 const styles = {
 	task: {
 		border: '1px solid #CFCBCB',
 		borderLeft: 'none',
+		borderBottom: 'none',
 		fontSize: '14px',
 	},
 	icon: {
@@ -74,19 +66,12 @@ export default function ProjectTask(props) {
 	const splitStartDate = startDate ? splitDate(startDate) : '';
 	const splitDueDate = dueDate ? splitDate(dueDate) : '';
 	const createdByName = createdBy ? createdBy.username : '';
-	const currentWorkSpace = useSelector(
-		state => state.WorkspaceReducer.currentWorkSpace
-	);
-	const membersWorkspace =
-		currentWorkSpace && currentWorkSpace.members ? currentWorkSpace.members : [];
+
 	const username = assigneTo !== null ? assigneTo.username : '';
 
 	const [stateTaskName, setStateTaskName] = useState(taskName);
-	const [dropDueDate, setDropDueDate] = useState(false);
 
 	const [dropPriority, setDropPriority] = useState(true);
-
-	const [dropAssignee, setDropAssignee] = useState(false);
 
 	const [isChecked, setIsChecked] = useState(taskStatus);
 	const [state, setState] = useState({
@@ -99,7 +84,7 @@ export default function ProjectTask(props) {
 	};
 
 	const handelChangeCheckedStatus = e => {
-		setIsChecked(e.target.checked);
+		setIsChecked(!isChecked);
 		dispatch(completeTaskApi(_id));
 	};
 
@@ -114,60 +99,13 @@ export default function ProjectTask(props) {
 		const titleTaskEdit = !titleTask.trim() ? 'Untitled task' : titleTask;
 		dispatch(updateTitleTaskApi(_id, titleTaskEdit));
 
-		e.target.value = titleTaskEdit
-	};	
+		e.target.value = titleTaskEdit;
+	};
 
 	const handleChangeTitleTask = e => {
 		const titleTask = e.target.value;
 		const titleTaskEdit = !titleTask.trim() ? 'Untitled task' : titleTask;
-		setStateTaskName(titleTaskEdit)
-	}
-
-	const handleDropAssignee = () => {
-		setDropAssignee(!dropAssignee);
-	};
-
-	const handleClickAwayAssignee = () => {
-		setDropAssignee(false);
-	};
-
-	const handleClickAssignee = member => {
-		const taskUpdate = {
-			...task,
-			assigneTo: {
-				...task.assigneTo,
-				username: member.username,
-				email: member.email,
-			},
-		};
-
-		setDropAssignee(false);
-		dispatch(assignTaskApi(taskUpdate));
-	};
-
-	const handelDropDueDate = () => {
-		setDropDueDate(!dropDueDate);
-	};
-
-	const handleClickAwayDueDate = () => {
-		setDropDueDate(false);
-	};
-
-	const handleDropPriority = () => {
-		setDropPriority(!dropPriority);
-	};
-
-	const handleClickPriority = e => {
-		const numberStatus = convertNumber(
-			priorityArr,
-			e.target.outerText.toLowerCase()
-		);
-		setDropPriority(true);
-		const taskUpdate = {
-			...task,
-			priorityValue: numberStatus.toString(),
-		};
-		dispatch(updatePriorityTaskApi(taskUpdate));
+		setStateTaskName(titleTaskEdit);
 	};
 
 	return (
@@ -225,72 +163,30 @@ export default function ProjectTask(props) {
 							onEditTitleTask={handleEditTitleTask}
 							onPressKeyTitleTask={handlePressKeyTitleTask}
 							onChangeTitleTask={handleChangeTitleTask}
-							onClickAssignee={handleClickAssignee}
+							onCheckedStatus={handelChangeCheckedStatus}
+							isCheckedStatus={isChecked}
 							task={task}
 						/>
 					</Drawer>
 				</React.Fragment>
 			</Grid>
 
-			<ClickAwayListener onClickAway={handleClickAwayAssignee}>
-				<Grid
-					item
-					xs={2}
-					style={{ ...styles.task, position: 'relative' }}
-					className='dropMenu--assignee'
-				>
-					<>
-						<Box
-							onClick={handleDropAssignee}
-							className='dropItem__block--assigneeshow'
-						>
-							{username ? (
-								<Box className='assignee__box--show'>
-									<AvatarAssignee assignee={username} />
-									<Typography className='assignee__typo--show'>{username}</Typography>
-								</Box>
-							) : (
-								<AccountBoxIcon className='dropItem__avatar--assigneeshow' />
-							)}
-						</Box>
-						<Box>
-							<AssigneeForm
-								memberArr={membersWorkspace}
-								onClickAssignee={handleClickAssignee}
-								isDrop={dropAssignee}
-							/>
-						</Box>
-					</>
-				</Grid>
-			</ClickAwayListener>
-
-			<ClickAwayListener onClickAway={handleClickAwayDueDate}>
-				<Grid
-					item
-					xs={2}
-					align='right'
-					style={styles.task}
-					className='dueDate__calendar'
-				>
-					<Box onClick={handelDropDueDate} className='dueDate__block--show'>
-						{splitStartDate || splitDueDate ? (
-							<Typography className='dueDate__typography--show'>
-								{showDate(splitStartDate, splitDueDate)}
-							</Typography>
-						) : (
-							<CalendarTodayIcon className='dueDate__icon--show' />
-						)}
-					</Box>
-					<DueDateForm
-						dropDueDate={dropDueDate}
-						startDate={splitStartDate}
-						dueDate={splitDueDate}
-						task={task}
-						handleClickAwayDueDate={handleClickAwayDueDate}
-					/>
-				</Grid>
-			</ClickAwayListener>
-
+			<Grid item xs={2} style={{ ...styles.task }} className='dropMenu--assignee'>
+				<AssigneeBox username={username} task={task} />
+			</Grid>
+			<Grid
+				item
+				xs={2}
+				align='right'
+				style={styles.task}
+				className='dueDate__calendar'
+			>
+				<DueDateBox
+					splitStartDate={splitStartDate}
+					splitDueDate={splitDueDate}
+					task={task}
+				/>
+			</Grid>
 			<Grid item xs={2} align='right' style={{ ...styles.task, padding: '10px' }}>
 				{createdByName}
 			</Grid>
@@ -300,14 +196,7 @@ export default function ProjectTask(props) {
 				style={{ ...styles.task, borderRight: 'none' }}
 				className='dropMenu--priority'
 			>
-				<MenuStatus
-					onDrop={handleDropPriority}
-					drop={dropPriority}
-					status={priorityValue}
-					statusArr={priorityArr}
-					menu={priorityMenu}
-					onClickStatus={handleClickPriority}
-				/>
+				<PriorityBox priorityValue={priorityValue} task={task} />
 			</Grid>
 		</Grid>
 	);

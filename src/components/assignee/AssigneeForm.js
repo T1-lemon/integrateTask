@@ -4,11 +4,10 @@ import React from 'react';
 import './assigneeForm.css';
 
 export default function AssigneeForm(props) {
-	const { memberArr, onClickAssignee, isDrop } = props;
+	const { memberArr, onClickAssignee } = props;
 	return (
 		<Box
 			className='dropItem__block--assigneehidden'
-			display={isDrop ? 'block' : 'none'}
 		>
 			<Box item xs={6} className='col--assignee'>
 				{memberArr.map((member, index) => {

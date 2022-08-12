@@ -2,7 +2,6 @@ import React from 'react';
 import {
 	Box,
 	ClickAwayListener,
-	Grid,
 	TextareaAutosize,
 	TextField,
 	Typography,
@@ -11,18 +10,14 @@ import Divider from '@mui/material/Divider';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import Button from '@mui/material/Button';
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import '../TaskDetail/taskDetail.css';
 import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
-import MenuStatus from '../priority/MenuStatus';
-import { updateTitleTaskApi } from '../../../redux/actions/TaskAction';
-import AvatarAssignee from '../../../components/assignee/AvatarAssignee';
-import AssigneeForm from '../../../components/assignee/AssigneeForm';
+import AssigneeBox from '../AssigneeBox';
+import DueDateBox from '../DueDateBox';
+import PriorityBox from '../PriorityBox';
 
 const styles = {
 	icon: {
@@ -42,7 +37,8 @@ export default function TaskDetail(props) {
 		onEditTitleTask,
 		onPressKeyTitleTask,
 		onChangeTitleTask,
-		onClickAssignee,
+		onCheckedStatus,
+		isCheckedStatus,
 	} = props;
 	const dispatch = useDispatch();
 	const {
@@ -81,7 +77,8 @@ export default function TaskDetail(props) {
 				<ButtonProjectList
 					text='mark complete'
 					icon={<DoneIcon style={styles.icon} />}
-					id='taskDetail__icon--header'
+					id={isCheckedStatus ? 'taskDetail__icon--Checked' : 'taskDetail__icon--unChecked'}
+					onClickButton={onCheckedStatus}
 				/>
 				<Button onClick={onClickButton}>
 					<ChevronRightIcon sx={{ color: '#0F0F10' }} />
@@ -110,36 +107,8 @@ export default function TaskDetail(props) {
 						<Typography className='taskDetail__typo taskDetail__typo--assignee'>
 							Assignee
 						</Typography>
-						<Box>
-							<ClickAwayListener onClickAway={handleClickAwayAssignee}>
-								<>
-									<Box
-										onClick={handleDropAssignee}
-										className='dropItem__block--assigneeshow'
-									>
-										{username ? (
-											<Box className='assignee__box--show'>
-												<AvatarAssignee assignee={username} />
-												<Typography className='assignee__typo--show'>{username}</Typography>
-											</Box>
-										) : (
-											<Box className='taskDetail__box--form taskDetail__box--noAssignee'>
-												<PermIdentityIcon className='taskDetail__icon taskDetail__icon--assignee' />
-												<Typography className='taskDetail__typo taskDetail__typo--assignee'>
-													No assignee
-												</Typography>
-											</Box>
-										)}
-									</Box>
-									<Box>
-										<AssigneeForm
-											memberArr={membersWorkspace}
-											onClickAssignee={onClickAssignee}
-											isDrop={dropAssignee}
-										/>
-									</Box>
-								</>
-							</ClickAwayListener>
+						<Box className='taskDetail__box--form taskDetail__box--formAssignee'>
+							<AssigneeBox username={username} task={task} />
 						</Box>
 					</Box>
 				</ClickAwayListener>
@@ -148,21 +117,21 @@ export default function TaskDetail(props) {
 						<Typography className='taskDetail__typo taskDetail__typo--dueDate'>
 							Due date
 						</Typography>
-						<Box>
-							<Box className='taskDetail__box--form taskDetail__box--noDueDate'>
-								<CalendarTodayIcon className='taskDetail__icon taskDetail__icon--dueDate' />
-								<Typography className='taskDetail__typo taskDetail__typo--dueDate'>
-									No due date
-								</Typography>
-							</Box>
-							<Box></Box>
+						<Box className='taskDetail__box--form taskDetail__box--formDueDate'>
+							<DueDateBox
+								splitStartDate={splitStartDate}
+								splitDueDate={splitDueDate}
+								task={task}
+							/>
 						</Box>
 					</Box>
 				</ClickAwayListener>
 				<Box className='taskDetail__box--content taskDetail__box--createdOn'>
 					<Typography className='taskDetail__typo'>Created on</Typography>
-					<Box className='taskDetail__box--form'>
-						<Typography className='taskDetail__typo'>tuan@gmail.com</Typography>
+					<Box className='taskDetail__box--form taskDetail__box--formCreatedOn'>
+						<Typography className='taskDetail__typo--createdOn '>
+							{createdByName}
+						</Typography>
 					</Box>
 				</Box>
 				<ClickAwayListener>
@@ -170,7 +139,9 @@ export default function TaskDetail(props) {
 						<Typography className='taskDetail__typo taskDetail__typo--dueDate'>
 							Priority
 						</Typography>
-						<Box></Box>
+						<Box className='taskDetail__box--form taskDetail__box--formPriority'>
+							<PriorityBox priorityValue={priorityValue} task={task} />
+						</Box>
 					</Box>
 				</ClickAwayListener>
 				<Box className='taskDetail__box--content taskDetail__box--description'>

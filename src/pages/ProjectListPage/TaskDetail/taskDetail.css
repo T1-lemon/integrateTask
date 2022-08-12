@@ -1,13 +1,18 @@
 .taskDetail__box--container {
     padding: 0 10px;
 }
+
+.taskDetail__typo {
+    font-size: 14px !important;
+}
+
 .taskDetail__box--header {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
 }
 
-#taskDetail__icon--header {
+#taskDetail__icon--unChecked {
     font-size: 14px;
     width: 130px;
     display: flex;
@@ -15,7 +20,18 @@
     border-radius: 5px;
 }
 
-#taskDetail__icon--header:hover {
+#taskDetail__icon--unChecked:hover {
+    color: #58A182;
+    background-color: #E0F4EC;
+    border-color: #58A182;
+}
+
+#taskDetail__icon--Checked {
+    font-size: 14px;
+    width: 130px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
     color: #58A182;
     background-color: #E0F4EC;
     border-color: #58A182;
@@ -50,8 +66,9 @@
 .taskDetail__box--form {
     display: flex;
     align-items: center;
-    margin-left: 30px;
-    padding: 5px 10px;
+    margin-left: 40px;
+    padding: 5px 0;
+    width: 150px;
     border-radius: 5px;
 }
 
@@ -60,28 +77,23 @@
     cursor: pointer;
 }
 
-.taskDetail__box--noAssignee:hover .taskDetail__icon--assignee {
-    color: #535252 !important;
-    border-color: #535252;
+.taskDetail__box--formAssignee {
+    padding-left: 15px;
 }
 
-.taskDetail__box--noAssignee:hover .taskDetail__typo--assignee {
-    color: #535252 !important;
-}
-.taskDetail__icon {
-    font-size: 21px !important;
-    border: 1px dashed #959595;
-    border-radius: 15px;
-    padding: 3px;
-    color: #959595 !important;
-    margin-right: 10px;
+.taskDetail__box--formDueDate {
+    padding-left: 17px;
 }
 
-.taskDetail__typo {
-    font-size: 13px !important;
-    color: #959595;
+.taskDetail__box--formCreatedOn {
+    padding-left: 33px;
+    margin-left: 25px;
 }
 
+.taskDetail__box--formPriority {
+    padding: 0;
+    margin-left: 58px;
+}
 .taskDetail__box--dueDate {
     margin-top: 15px;
 }
@@ -102,6 +114,10 @@
 
 .taskDetail__box--createdOn {
     margin-top: 15px;
+}
+
+.taskDetail__typo--createdOn {
+    font-size: 14px !important;
 }
 
 .taskDetail__box--description {

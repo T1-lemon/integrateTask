@@ -30,7 +30,7 @@ export default function DisplayStatus(props) {
 			);
 		default:
 			return (
-				<Typography className='dropItem__typography dropItem__typography--none'></Typography>
+				<Typography className='dropItem__typography dropItem__typography--none'>___</Typography>
 			);
 	}
 }
