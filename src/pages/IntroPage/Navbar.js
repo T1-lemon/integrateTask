@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link as LinkRoute } from 'react-router-dom';
 import ButtonGetStarted from './ButtonGetStarted';
-const pages = ['Why Asana?', 'Features', 'Resources', 'Enterprise', 'Princing'];
+const pages = ['Why Infinity?'];
 
 const styles = {
 	linkLogin: {
@@ -30,15 +30,15 @@ export default function Navbar() {
 					<div className='main-logo'>
 						<Grid container alignItems='center'>
 							<img
-								src='/assets/images/IntroPage/logo-asana.png'
+								src='/img/logoInfinity.png'
 								alt='#'
 								style={{
-									width: '22px',
-									height: '22px',
+									width: '122px',
+									height: '36px',
 									marginRight: '8px',
 								}}
 							/>
-							<Typography
+							{/* <Typography
 								variant='h6'
 								noWrap
 								component='a'
@@ -53,7 +53,7 @@ export default function Navbar() {
 								}}
 							>
 								asana
-							</Typography>
+							</Typography> */}
 						</Grid>
 					</div>
 

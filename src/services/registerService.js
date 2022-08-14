@@ -1,8 +1,14 @@
-import { post } from '../utils/request';
+import requestApi from '../utils/requestApi';
 
-export const registerService = async values => {
+export const registerService = async dataUser => {
 	try {
-		const respone = await post('user/register', values);
+		const respone = await requestApi({
+			method: 'post',
+			url: 'auth/register',
+			data: {
+				...dataUser,
+			},
+		});
 		return respone;
 	} catch (error) {
 		console.log(error.response);

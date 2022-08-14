@@ -1,5 +1,4 @@
 import {
-	
 	UPDATE_DROP_SECTION,
 	SET_CURRENT_PROJECT,
 	GET_ALL_PROJECT_API,
@@ -12,6 +11,7 @@ import {
 	unArchiveProjectService,
 	getProjectService,
 	updateDropSectionService,
+	updateTitleProjectService,
 } from '../../services/projectService';
 
 // api
@@ -25,12 +25,24 @@ export const getAllProjectInWorkspaceApi = worksapceId => {
 		});
 	};
 };
+export const getProjectApi = projectId => {
+	return async dispatch => {
+		const { data } = await getProjectService(projectId);
+
+		dispatch({
+			type: SET_CURRENT_PROJECT,
+			dataProject: data,
+		});
+	};
+};
 
 export const createProjectApi = dataProject => {
 	return async dispatch => {
 		const { data } = await createProjectService(dataProject);
+		console.log('data api tra ve project tao moi',data);
+		await dispatch(getProjectApi(data._id));
 
-		dispatch(getAllProjectInWorkspaceApi(data.workspaceId));
+		// await dispatch(getAllProjectInWorkspaceApi(data.workspaceId));
 	};
 };
 
@@ -44,16 +56,7 @@ export const archiveUnarchiveProjectApi = (status, projectId) => {
 	};
 };
 
-export const getProjectApi = projectId => {
-	return async dispatch => {
-		const { data } = await getProjectService(projectId);
 
-		dispatch({
-			type: SET_CURRENT_PROJECT,
-			dataProject: data,
-		});
-	};
-};
 
 export const updateDropSectionApi = (newSectionOrder, projectId) => {
 	return async dispatch => {
@@ -75,9 +78,20 @@ export const updateDropSection = newSectionOrder => {
 	return action;
 };
 
+export const updateTitleProjectApi = dataProject => {
+	return async dispatch => {
+		const { data } = await updateTitleProjectService(dataProject);
+
+		dispatch(getAllProjectInWorkspaceApi(data.workspaceId));
+
+		dispatch({
+			type: SET_CURRENT_PROJECT,
+			dataProject: data,
+		});
+	};
+};
+
 // móc data
-
-
 
 export const addTaskAction = (nameNewTask, sectionId) => {
 	let action = {

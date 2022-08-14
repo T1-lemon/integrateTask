@@ -9,8 +9,8 @@ export default function IntroPages() {
 		<div>
 			<Navbar />
 			<WorkSection />
-			<IntergrationSection />
-			<FooterIntroPage />
+			{/* <IntergrationSection />
+			<FooterIntroPage /> */}
 		</div>
 	);
 }

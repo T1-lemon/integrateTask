@@ -6,6 +6,7 @@ import AssigneeForm from '../../components/assignee/AssigneeForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { assignTaskApi } from '../../redux/actions/TaskAction';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import { ProgressListener } from '../../components/ProgressTest/Progress';
 
 export default function AssigneeBox(props) {
 	const { username, task } = props;
@@ -17,7 +18,7 @@ export default function AssigneeBox(props) {
 	const membersWorkspace =
 		currentWorkSpace && currentWorkSpace.members ? currentWorkSpace.members : [];
 
-	const handleClickAssignee = member => {
+	const handleClickAssignee = async member => {
 		const taskUpdate = {
 			...task,
 			assigneTo: {
@@ -26,9 +27,11 @@ export default function AssigneeBox(props) {
 				email: member.email,
 			},
 		};
-
-		dispatch(assignTaskApi(taskUpdate));
 		handleClosePopover();
+
+		ProgressListener.emit('start');
+		await dispatch(assignTaskApi(taskUpdate));
+		ProgressListener.emit('stop');
 	};
 
 	const handleOpenPopover = event => {
@@ -53,7 +56,7 @@ export default function AssigneeBox(props) {
 					<>
 						<Box className='AssigneeBox__box--show'>
 							<PermIdentityIcon className='AssigneeBox__icon' />
-							<Typography className='AssigneeBox__typo' sx={{fontSize: '11px'}}>
+							<Typography className='AssigneeBox__typo' sx={{ fontSize: '11px' }}>
 								No assignee
 							</Typography>
 						</Box>

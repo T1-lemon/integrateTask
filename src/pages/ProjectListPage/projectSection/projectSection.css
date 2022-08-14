@@ -48,54 +48,49 @@
 	border-radius: 0;
 	border: none;
 }
+.sectionForm__icon {
+	padding: 6px;
+	cursor: pointer;
+	border-radius: 5px;
+}
 
-.Box__input--addTask .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+/* .sectionForm__icon:hover {
+	background-color: #F9F8F8;
+} */
+
+/* .Box__input--addTask .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
 	border-radius: 10px;
 	font-weight: bold;
 	font-size: 15px;
-}
+} */
 
-.Box__input--addTask .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+/* .Box__input--addTask
+	.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root
+	.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
 	border-color: white;
-}
+} */
 
-.Box__input--addTask input {
+/* .Box__input--addTask input {
 	padding: 10px;
-}
+} */
 
 .drop-preview {
 	background-color: rgba(150, 150, 200, 0.1);
 	border: 1px dashed #abc;
 	margin: 5px;
 }
-
-#title__button--showMore {
-	width: 30px;
-	border-radius: 0;
-	border: none;
+.sectionForm__menu--addSection {
+	position: relative;
 }
 
-.dropMenu--Section {
+.sectionForm__items--addSection {
 	position: absolute;
 	top: 30px;
-	right: -100px;
-	z-index: 1;
+	right: -120px;
+	background-color: #fff;
+	z-index: 5;
+	border-radius: 5px;
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-}
-
-.dropMenu--Section:focus {
-	display: block;
-}
-
-#dropItem__button--addSection {
-	width: 125px;
-	justify-content: space-around;
-	border: none;
-	border-radius: 5px 5px 0 0;
-}
-
-#dropItem__button--addSection:hover + .drop__block--addSection {
-	display: block;
 }
 
 #dropItem__button--delSection {
@@ -103,24 +98,11 @@
 	justify-content: space-around;
 	border: none;
 	border-radius: 0 0 5px 5px;
-	color: #F90B0B;
+	color: #f90b0b;
+	width: 100% !important;
 }
 #dropItem__button--delSection:hover {
 	color: #da143f;
-}
-
-.drop__block--addSection {
-	position: absolute;
-	top: -1px;
-	left: 126px;
-	display: none;
-	border: 1px solid grey;
-	border-radius: 5px;
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-}
-
-.drop__block--addSection:hover {
-	display: block;
 }
 
 #dropItem__button--addSectionAbove {

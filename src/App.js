@@ -6,19 +6,21 @@ import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 import IntroPages from './pages/IntroPage/IntroPages';
 import LoginPage from './pages/LoginPage/LoginPage';
 import MainPage from './pages/MainPage/MainPage';
-import MyTask from './pages/MyTask/MyTask';
 import Home from './pages/Home/Home';
 import store from './redux/configStore';
 import LoadingPageWorkspace from './pages/LoadingPage/LoadingPageWorkspace.js';
 import BlankProject from './pages/BlankProject/BlankProject';
 import BoardView from './pages/ProjectBoardView/BoardView';
-import ProjectListPage from './pages/ProjectListPage/ProjectListPage'
 import './assets/css/resetCss.css';
+import Progress from './components/ProgressTest/Progress.js';
+import ProjectListPage from './pages/ProjectListPage/ProjectListPage.js';
+import ProjectArchive from './pages/Archive/ProjectArchive.js';
 
 function App() {
 	return (
 		<Provider store={store}>
 			<BrowserRouter>
+				<Progress />
 				<Routes>
 					<Route path={URLS.webIntro} element={<IntroPages />} />
 					<Route path={URLS.signUp} element={<SignUp />} />
@@ -26,9 +28,9 @@ function App() {
 					<Route path={URLS.login} element={<LoginPage />} />
 					<Route path={URLS.mainPage} element={<MainPage />}>
 						<Route path={URLS.workspace} element={<Home />} />
-						<Route path={URLS.myTask} element={<MyTask />} />
 						<Route path={URLS.boardView} element={<BoardView />} />
-						<Route path=':projectId/list' element={<ProjectListPage />} />
+						<Route path={URLS.listView} element={<ProjectListPage />} />
+						<Route path=':projectId/listArchive' element={<ProjectArchive />} />
 					</Route>
 					<Route path={URLS.newProject} element={<BlankProject />} />
 

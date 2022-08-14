@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -16,9 +15,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { FormHelperText } from '@mui/material';
 import ImageListItem from '@mui/material/ImageListItem';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { EMAIL_REGEX } from '../../utils/emailRegex';
 import {
 	loginStart,
@@ -125,36 +124,14 @@ export default function Login() {
 					}}
 				>
 					<Box>
-						<ImageListItem sx={{ width: '120px', pb: 7 }}>
-							<img src='/assets/images/LoginPage/asana-logo-full.png' alt='#' />
+						<ImageListItem sx={{ width: '180px', pb: 4 }}>
+							<img src='/img/logoInfinity.png' alt='#' />
 						</ImageListItem>
 					</Box>
 					<Typography component='h1' variant='h4' sx={{ pb: 2 }}>
-						Login into Asana
+						Login into Infinity
 					</Typography>
-					<Button
-						variant='outlined'
-						sx={{
-							width: '100%',
-							justifyContent: 'space-around',
-							py: 1,
-							px: 3,
-							textTransform: 'none',
-							borderColor: '#AFABAC',
-							color: '#1E1F21',
-							'&:hover': {
-								backgroundColor: '#F9F8F8',
-								borderColor: '#AFABAC',
-							},
-							mb: 2,
-						}}
-					>
-						<ImageListItem sx={{ width: '25px' }}>
-							<img alt='#' src='/assets/images/LoginPage/gg-logo.png' />
-						</ImageListItem>
-						Continue with Google
-					</Button>
-					<Typography sx={{ color: '#AFABAC' }}>or</Typography>
+
 					<Box
 						component='form'
 						onSubmit={handleSubmit}
@@ -235,34 +212,19 @@ export default function Login() {
 						>
 							Sign In
 						</Button>
-						<Grid container>
-							<Grid item xs>
-								<Link
-									href='#'
-									variant='body2'
-									sx={{
-										color: '#727272',
-										textDecoration: 'none',
-										'&:hover': { textDecoration: 'underline' },
-									}}
-								>
-									Forgot password?
-								</Link>
-							</Grid>
-							<Grid item>
-								<Link
-									href='#'
-									variant='body2'
-									sx={{
-										color: '#727272',
-										textDecoration: 'none',
-										'&:hover': { textDecoration: 'underline' },
-									}}
-								>
-									{"Don't have an account? Sign Up"}
-								</Link>
-							</Grid>
-						</Grid>
+
+						<Link
+							href='/sign-up'
+							variant='body2'
+							sx={{
+								color: '#727272',
+								textDecoration: 'none',
+								float: 'right',
+								'&:hover': { textDecoration: 'underline' },
+							}}
+						>
+							{"Don't have an account? Sign Up"}
+						</Link>
 					</Box>
 				</Box>
 			</Container>

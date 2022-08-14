@@ -12,7 +12,7 @@ export default function BoardHeader(props) {
 		section,
 		setAddFormSectionLeft,
 		setAddFormSectionRight,
-		setNewTaskTop,
+		openNewTaskFormTop,
 	} = props;
 
 	const titleSectionRef = useRef(null);
@@ -35,6 +35,8 @@ export default function BoardHeader(props) {
 			sectionId: section._id,
 			sectionName: titleSectionEdit,
 		};
+		
+
 
 		dispatch(updateTitleSectionApi(dataSection));
 	};
@@ -52,6 +54,7 @@ export default function BoardHeader(props) {
 				onSubmit={e => {
 					e.preventDefault();
 					editTitleSection();
+					titleSectionRef.current.blur();
 				}}
 				onBlur={editTitleSection}
 			>
@@ -63,9 +66,9 @@ export default function BoardHeader(props) {
 						e.target.select();
 					}}
 					onChange={handleTitleChange}
-					onMouseDown={e => {
-						e.preventDefault();
-					}}
+					// onMouseDown={e => {
+					// 	e.preventDefault();
+					// }}
 					ref={titleSectionRef}
 					value={titleSection}
 				/>
@@ -75,7 +78,7 @@ export default function BoardHeader(props) {
 					className='btnOption'
 					fontSize='small'
 					onClick={() => {
-						setNewTaskTop();
+						openNewTaskFormTop();
 					}}
 				/>
 			</TooltipCustomize>

@@ -1,4 +1,5 @@
 export const mapOrder = (array,order,key)=>{
+    // console.log(order);
    
     array.sort(
         (a, b) =>

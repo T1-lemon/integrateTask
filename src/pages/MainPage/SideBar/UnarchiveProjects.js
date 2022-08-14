@@ -5,7 +5,8 @@ import ButtonMore from './ButtonMore';
 import { NavLink } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import { getProjectApi } from '../../../redux/actions/ProjectAction';
-
+import WorkIcon from '@mui/icons-material/Work';
+import {useParams} from 'react-router-dom';
 
 const styles = {
 	boxProjectContainer: {
@@ -30,6 +31,10 @@ const styles = {
 export default function UnarchiveProjects() {
 	const dispatch = useDispatch();
 
+	const {projectId} = useParams();
+
+	
+
 	let projectUnarchives = [];
 
 	const arrProject = useSelector(state => state.ProjectReducer.arrProject);
@@ -42,9 +47,9 @@ export default function UnarchiveProjects() {
 		<div>
 			{projectUnarchives.map((project, index) => {
 				let href = `/main-page/${project._id}/list`;
-				let keyRender = `${project.projectName} ${index}`;
+				let keyRender = `${project._id}`;
 				return (
-					<ListItem className='listItem__hover' key={keyRender} disablePadding>
+					<ListItem className={(project._id===projectId)?'listItem__project':''} key={keyRender} disablePadding>
 						<NavLink
 							className='nav__link--sidebar'
 							to={href}
@@ -54,7 +59,7 @@ export default function UnarchiveProjects() {
 							}}
 						>
 							<Box sx={styles.boxProjectContainer}>
-								<div style={styles.boxProject}></div>
+								<WorkIcon sx={{ fontSize: '16px', marginRight: '10px' }} />
 								<ListItemText
 									sx={{
 										'& .css-10hburv-MuiTypography-root': { fontSize: '12px' },

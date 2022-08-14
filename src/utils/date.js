@@ -40,7 +40,19 @@ export const convertDateToValue = value => {
 };
 
 export const showDate = (startDate, dueDate) => {
-	if (startDate || dueDate) {
+	if (startDate && !dueDate) {
+		const valueStartDate = convertDateToValue(startDate);
+
+		return valueStartDate;
+	}
+
+	if (!startDate && dueDate) {
+		const valueDueDate = convertDateToValue(dueDate);
+
+		return valueDueDate;
+	}
+
+	if (startDate && dueDate) {
 		const valueStartDate = convertDateToValue(startDate);
 		const valueDueDate = convertDateToValue(dueDate);
 
@@ -49,6 +61,8 @@ export const showDate = (startDate, dueDate) => {
 	}
 	return '';
 };
+
+
 
 export const filterDate = (taskList, filterDueDate) => {
 	const currentDay = new Date();

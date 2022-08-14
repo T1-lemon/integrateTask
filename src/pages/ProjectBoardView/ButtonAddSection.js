@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import FormNewSection from './FormNewSection';
 import { addSectionApi } from '../../redux/actions/SectionAction';
+import { ProgressListener } from '../../components/ProgressTest/Progress';
+
+
 
 export default function ButtonAddSection(props) {
 	const { sectionOrder, _id } = useSelector(
@@ -25,10 +28,15 @@ export default function ButtonAddSection(props) {
 			projectId: _id,
 		};
 
+		ProgressListener.emit('start');
+
 		await dispatch(addSectionApi(newSection));
+		
+		ProgressListener.emit('stop');
+
 	};
 
-	const handleSubmit = (event, nameSection) => {
+	const handleSubmit =  (event, nameSection) => {
 		event.preventDefault();
 		addSection(nameSection);
 		setDisplayBtnAddSection(true);

@@ -3,7 +3,9 @@ import { SET_CURRENT_WORKSPACE } from '../types/WorkspaceTypes';
 const { Workspaces } = data;
 
 const initialState = {
-	arrWorkspaces: Workspaces,
+	// arrWorkspaces: Workspaces,
+	arrWorkspaces: [],
+
 	currentWorkSpace: {},
 };
 

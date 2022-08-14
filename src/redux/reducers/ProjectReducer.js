@@ -1,14 +1,9 @@
-import data from '../../data/Workspaces.json';
-import { mapOrder } from '../../utils/sort';
-
 import {
 	UPDATE_DROP_TASK,
 	UPDATE_DROP_SECTION,
 	SET_CURRENT_PROJECT,
 	GET_ALL_PROJECT_API,
 } from '../types/ProjectTypes';
-
-const { Workspaces, projects } = data;
 
 const initialState = {
 	arrProject: [],

@@ -1,13 +1,12 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { BoxHover } from './BoxHover';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector} from 'react-redux';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import AddIcon from '@mui/icons-material/Add';
 import './project.css';
-import { Divider, Typography } from '@mui/material';
+import {  Typography } from '@mui/material';
 
 const styles = {
 	divider: {
@@ -16,10 +15,9 @@ const styles = {
 	cssArchived: {
 		color: '#6d6e6f',
 		fontSize: '14px',
+		marginTop:'4px'
 	},
 };
-
-
 
 export default function Projects() {
 	const arrProject = useSelector(state => state.ProjectReducer.arrProject);
@@ -28,9 +26,9 @@ export default function Projects() {
 
 	const projects = arrProject ? [...arrProject] : [];
 
-	const addProject = ()=>{
+	const addProject = () => {
 		navigate('/new-project');
-	}
+	};
 
 	return (
 		<Box className='home__projectBlock--border'>
@@ -40,15 +38,16 @@ export default function Projects() {
 					<Box className='home__icon--borderAddProject'>
 						<AddIcon className='home__icon--addProject' />
 					</Box>
-					<Typography className='home__typo--addProject' >Add Projects</Typography>
+					<Typography className='home__typo--addProject'>Add Projects</Typography>
 				</BoxHover>
 				<Box className='home__box--listProject'>
 					{projects.map((project, index) => {
-						let keyRender = `${project.projectName} ${index}`;
+						let keyRender = `${project._id}`;
+						let href = `/main-page/${project._id}/list`;
 
 						return (
 							<Box key={keyRender} className='home__box--showProject'>
-								<NavLink to='#' className='home__navLink'>
+								<NavLink to={href} className='home__navLink'>
 									<BoxHover>
 										<Box className='home__box--square'></Box>
 										<Box>

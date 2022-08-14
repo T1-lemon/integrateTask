@@ -313,5 +313,8 @@
 
 .taskDetails__form--block .css-1160xiw-MuiPaper-root-MuiDrawer-paper {
 	width: 40% !important;
-	top: 103px !important;
+	/* top: 103px !important; */
+	height:calc(100vh - 85px);
+	bottom: 0px;
+	top: initial;
 }

@@ -1,5 +1,5 @@
 import { Box, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -37,14 +37,29 @@ const styles = {
 export default function ProjectAddSectionForm(props) {
 	const { isDisplay, onSubmit } = props;
 
+	let inputAddSectionRef = useRef(null);
+
+	const formAddSectionRef = useRef(null);
+
+	useEffect(() => {
+		if (isDisplay && inputAddSectionRef && inputAddSectionRef.current) {
+			inputAddSectionRef.current.focus();
+		}
+	}, [isDisplay]);
+	
 	const handleKeyPress = value => {
-		if(value.key === 'Enter') {
-			value.target.blur()
+		if (value.key === 'Enter') {
+			value.target.blur();
 		}
 	};
 
 	return (
-		<Grid item className='title__content ' display={isDisplay ? 'flex' : 'none'}>
+		<Grid
+			item
+			className='title__content '
+			display={isDisplay ? 'flex' : 'none'}
+			ref={formAddSectionRef}
+		>
 			<Box>
 				<ButtonProjectList
 					icon={<DragIndicatorSharpIcon style={styles.icon} />}
@@ -61,7 +76,7 @@ export default function ProjectAddSectionForm(props) {
 					width: '175px',
 					'& .MuiOutlinedInput-root:hover': {
 						'& > fieldset': {
-							borderColor: 'white',
+							borderColor: 'gray',
 						},
 					},
 					'& .MuiOutlinedInput-root.Mui-focused': {
@@ -69,18 +84,31 @@ export default function ProjectAddSectionForm(props) {
 							borderColor: '#0057B7',
 						},
 					},
+					'& .MuiOutlinedInput-root': {
+						'& > fieldset': {
+							borderColor: 'white',
+							borderRadius: '10px',
+						},
+					},
+					'&': {
+						input: {
+							padding: '10px',
+							fontWeight: 'bold',
+							fontSize: '15px',
+						},
+					},
+					borderColor: 'white',
 				}}
 				placeholder={'Write a section name'}
 				className='Box__input--addTask'
 				onKeyPress={handleKeyPress}
-				inputRef={input => input && input.focus()}
+				inputRef={inputAddSectionRef}
 			/>
 			<Box sx={{ position: 'relative' }}>
 				<ButtonProjectList
 					icon={<AddIcon style={styles.icon} />}
 					id='title__button--addTask'
 				/>
-				<Typography id='addTask__span--hover'>Add Task</Typography>
 			</Box>
 			<Box sx={{ position: 'relative' }}>
 				<ButtonProjectList

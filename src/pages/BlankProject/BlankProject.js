@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createProjectApi } from '../../redux/actions/ProjectAction';
-import Progress from '../../components/Progress/Progress';
+import { ProgressListener } from '../../components/ProgressTest/Progress';
 
 const PROJECT_NAME_REQUIRED = 'Project name is required.';
 
@@ -30,17 +30,19 @@ export default function BlankProject() {
 	const navigate = useNavigate();
 	const [projectName, setProjectName] = useState('');
 	const [errorRequired, setErrorRequired] = useState('');
-	const [isDisplayProgress, setDisplayProgress] = useState(false);
 
 	const dispatch = useDispatch();
 	const currentWorkSpace = useSelector(
 		state => state.WorkspaceReducer.currentWorkSpace
 	);
 
-	const currentUser = useSelector(state => state.authReducer.currentUser);
-	
+	const currentProject = useSelector(
+		state => state.ProjectReducer.currentProject
+	);
 
-	const handleSubmit = event => {
+	const currentUser = useSelector(state => state.authReducer.currentUser);
+
+	const handleSubmit = async event => {
 		event.preventDefault();
 
 		if (!projectName.trim()) {
@@ -48,13 +50,12 @@ export default function BlankProject() {
 			return;
 		}
 
-		setDisplayProgress(true);
+		ProgressListener.emit('start');
 
-		dispatchProject(projectName);
+		await dispatchProject(projectName);
 	};
 
 	const dispatchProject = async projectName => {
-		//information to test api
 		const dataProject = {
 			projectName: projectName,
 			memberEmails: [currentUser.email],
@@ -63,9 +64,16 @@ export default function BlankProject() {
 		};
 
 		await dispatch(createProjectApi(dataProject));
+		ProgressListener.emit('stop');
 
-		navigate(`/main-page/home/${currentWorkSpace._id}`);
+		// navigate(`/main-page/home/${currentWorkSpace._id}`);
 	};
+
+	useEffect(() => {
+		if (currentProject.projectName === projectName) {
+			navigate(`/main-page/${currentProject._id}/list`);
+		}
+	}, [currentProject]);
 
 	const getValue = event => {
 		const { value } = event.target;
@@ -74,7 +82,6 @@ export default function BlankProject() {
 
 	return (
 		<Box p={3}>
-			{isDisplayProgress && <Progress/>}
 			<IconButton
 				onClick={() => {
 					navigate(-1);

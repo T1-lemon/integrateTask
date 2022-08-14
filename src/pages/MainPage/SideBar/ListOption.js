@@ -39,11 +39,6 @@ export default function ListOption() {
 			tagIcon: <HomeOutlinedIcon sx={styles.iconButton} />,
 		},
 		{
-			title: 'My task',
-			href: '/main-page/my-task',
-			tagIcon: <CheckCircleOutlineOutlinedIcon sx={styles.iconButton} />,
-		},
-		{
 			title: 'Reporting',
 			href: '/main-page/reporting',
 			tagIcon: <OutlinedFlagIcon sx={styles.iconButton} />,

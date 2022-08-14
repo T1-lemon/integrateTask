@@ -10,6 +10,7 @@ import toggleReducer from './reducers/toggleReducer';
 import reduxThunk from 'redux-thunk';
 import filterReducer from './reducers/filterReducer';
 
+
 const composedEnhances = composeWithDevTools(applyMiddleware(reduxThunk));
 
 const rootReducer = combineReducers({
@@ -18,7 +19,7 @@ const rootReducer = combineReducers({
 	SectionReducer,
 	authReducer,
 	toggleReducer,
-	TaskReducer, 
+	TaskReducer,
 	filterReducer,
 });
 

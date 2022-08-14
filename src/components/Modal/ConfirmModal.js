@@ -74,7 +74,7 @@ const styles = {
 };
 
 export default function ConfirmModal(props) {
-	const { title, content, show, onAction, nameBtnConfirm } = props;
+	const { title, content, nameBtnConfirm , show, onAction,} = props;
 
 	return (
 		<div>

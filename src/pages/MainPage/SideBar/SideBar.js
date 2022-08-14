@@ -5,7 +5,6 @@ import Divider from '@mui/material/Divider';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { NavLink } from 'react-router-dom';
 import { DrawerHeader } from '../../../components/DrawerHeader/DrawerHeader';
-import { ListItemCustomize } from '../../../components/List/List';
 import { Avatar, AvatarGroup } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import IconButton from '@mui/material/IconButton';
@@ -50,13 +49,10 @@ export default function SideBar(props) {
 
 	const dispatch = useDispatch();
 
-	
-
 	const { open, setOpen, drawerWidth } = props;
 
 	useEffect(() => {
 		async function fetchData() {
-		
 			if (currentProject._id) {
 				const result = await getWorkspaceById(currentProject.workspaceId);
 				dispatch(setCurrentWorkspaceAction(result.data));
@@ -65,17 +61,6 @@ export default function SideBar(props) {
 		}
 		fetchData();
 	}, [currentProject]);
-
-	// const fetchData = async (currentProject)=>{
-	// 	const result = await getWorkspaceById(currentProject.workspaceId);
-	// 	dispatch(setCurrentWorkspaceAction(result.data));
-	// }
-
-	// if (currentProject._id) {
-	// 	console.log(1);
-	// 	// fetchData(currentProject);
-	// 	// dispatch(getAllProjectInWorkspaceApi(workspaceId));
-	// }
 
 	const handleDrawerClose = () => {
 		setOpen(false);
@@ -104,16 +89,17 @@ export default function SideBar(props) {
 			open={open}
 		>
 			<DrawerHeader>
-				<Box
-					component='img'
-					sx={{
-						maxWidth: '80px',
-						float: 'left',
-						flex: 1,
-					}}
-					alt='Logo'
-					src='https://d3ki9tyy5l5ruj.cloudfront.net/obj/6622ad572b5223bcb1ad696eae8f988e5dd04631/Asana-Logo-Horizontal-Coral-White.svg'
-				/>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+					<Box
+						component='img'
+						sx={{
+							maxWidth: '32px',
+						}}
+						alt='Logo'
+						src='/img/logoSmall.png'
+					/>
+					<span style={{ marginLeft: '2px' }}>INFINITY</span>
+				</Box>
 				<IconButton sx={styles.iconBtnClose} onClick={handleDrawerClose}>
 					<ChevronLeftIcon />
 				</IconButton>

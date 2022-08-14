@@ -4,11 +4,12 @@ import { TooltipCustomize } from '../../components/ToolTip/ToolTip';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+
 import {
 	MODAL_ACTION_CLOSE,
 	MODAL_ACTION_CONFIRM,
@@ -32,11 +33,11 @@ export default function MoreOptionSection(props) {
 		setAnchorEl(null);
 	};
 
-	const [isShowModalDelete, setShowModalDelete] = useState(false);
+	const [isShowModalArchive, setShowModalArchive] = useState(false);
 
 	const toggleModal = () => {
 		handleCloseMore();
-		setShowModalDelete(!isShowModalDelete);
+		setShowModalArchive(!isShowModalArchive);
 	};
 
 	const onModalArchiveSection = type => {
@@ -107,13 +108,13 @@ export default function MoreOptionSection(props) {
 					className='menu__option-item delete__section-task'
 					onClick={toggleModal}
 				>
-					<DeleteOutlineIcon className='icon__option' />
+					<Inventory2OutlinedIcon className='icon__option' />
 					Archive Section
 				</MenuItem>
 			</Menu>
 
 			<ConfirmModal
-				show={isShowModalDelete}
+				show={isShowModalArchive}
 				title='Archive this section'
 				content={
 					<span>

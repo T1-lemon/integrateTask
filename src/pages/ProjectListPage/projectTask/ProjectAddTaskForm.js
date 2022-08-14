@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
 import { createTaskApi } from '../../../redux/actions/TaskAction';
 import './projectTask.css';
+import { ProgressListener } from '../../../components/ProgressTest/Progress';
 
 const styles = {
 	task: {
@@ -37,7 +38,7 @@ const styles = {
 		background: '#EEEFF5',
 		borderLeft: '1px solid #EEEFF5',
 		cursor: 'pointer',
-	}
+	},
 };
 
 export default function ProjectTask(props) {
@@ -60,7 +61,7 @@ export default function ProjectTask(props) {
 		}
 	};
 
-	const handleEditTitleTask = e => {
+	const handleEditTitleTask = async e => {
 		const titleTask = e.target.value;
 		const titleTaskEdit = !titleTask.trim() ? '' : titleTask;
 		if (titleTaskEdit === '') {
@@ -73,9 +74,11 @@ export default function ProjectTask(props) {
 			projectId: projectId,
 			sectionId: sectionId,
 		};
-		dispatch(createTaskApi(taskCreate, taskOrderInSection, isAddTask));
-		e.target.value = '';
 		onClickAddTask();
+		ProgressListener.emit('start');
+		await dispatch(createTaskApi(taskCreate, taskOrderInSection, isAddTask));
+		ProgressListener.emit('stop');
+		e.target.value = '';
 	};
 
 	return (
@@ -112,9 +115,7 @@ export default function ProjectTask(props) {
 					<Box className='css__focus'></Box>
 				</Box>
 			</Grid>
-			<Grid item xs={8} style={styles.blank}>
-
-			</Grid>
+			<Grid item xs={8} style={styles.blank}></Grid>
 		</Grid>
 	);
 }

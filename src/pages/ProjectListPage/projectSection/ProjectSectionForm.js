@@ -1,8 +1,21 @@
-import { Box, Grid, TextField, Typography } from '@mui/material';
+import {
+	Box,
+	ClickAwayListener,
+	Grid,
+	Menu,
+	MenuItem,
+	Popover,
+	TextField,
+	Typography,
+} from '@mui/material';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragIndicatorSharpIcon from '@mui/icons-material/DragIndicatorSharp';
@@ -17,8 +30,13 @@ import {
 } from '../../../constants/constants';
 import { deleteSectionAction } from '../../../redux/actions/ProjectAction';
 import ConfirmModal from '../../../components/Modal/ConfirmModal';
-import { archiveSectionApi, updateTitleSectionApi } from '../../../redux/actions/SectionAction';
+import {
+	archiveSectionApi,
+	updateTitleSectionApi,
+} from '../../../redux/actions/SectionAction';
 import ButtonProjectList from '../../../components/ButtonProjectList/ButtonProjectList';
+import { TooltipCustomize } from '../../../components/ToolTip/ToolTip';
+import { ProgressListener } from '../../../components/ProgressTest/Progress';
 
 const styles = {
 	textTitle: {
@@ -67,17 +85,20 @@ export default function ProjectSectionForm(props) {
 
 	const handleShowMenuSection = () => {
 		setIsShowMenuSection(!isShowMenuSection);
+		setOpen(prev => !prev);
 	};
 
-	const handleModalArchiveSection = type => {
+	const handleModalArchiveSection = async type => {
 		if (type === MODAL_ACTION_CONFIRM) {
-			dispatch(archiveSectionApi(sectionId))
+			ProgressListener.emit('start');
+			await dispatch(archiveSectionApi(sectionId));
+			ProgressListener.emit('stop');
 		}
 		setIsShowMenuSection(false);
 		setShowModalDelete(false);
 	};
 
-	const handleEditTitleSection = e => {
+	const handleEditTitleSection = async e => {
 		const titleSection = e.target.value;
 		const titleSectionEdit = !titleSection.trim()
 			? 'Untitled section'
@@ -87,8 +108,10 @@ export default function ProjectSectionForm(props) {
 			sectionId: sectionId,
 			sectionName: titleSectionEdit,
 		};
-		searchInput.current.value = titleSectionEdit;
-		dispatch(updateTitleSectionApi(dataSection));
+		e.target.value = titleSectionEdit;
+		ProgressListener.emit('start');
+		await dispatch(updateTitleSectionApi(dataSection));
+		ProgressListener.emit('stop');
 	};
 
 	const handleKeyPress = value => {
@@ -97,75 +120,93 @@ export default function ProjectSectionForm(props) {
 		}
 	};
 
+	const [open, setOpen] = useState(false);
+
+	const handleClickAway = () => {
+		setIsShowMenuSection(false);
+	};
+
 	return (
-		<Grid item className='title__content '>
-			<Box
-				className='row-drag-handle'
-				onMouseDown={onMouseDown}
-				onMouseUp={onMouseUp}
-			>
-				<ButtonProjectList
-					icon={<DragIndicatorSharpIcon style={styles.icon} />}
-					id='title__icon--hover'
-				/>
-			</Box>
-			<ButtonProjectList
-				icon={
-					isExpand ? (
-						<ExpandMoreIcon style={styles.icon} />
-					) : (
-						<ChevronRightIcon style={styles.icon} />
-					)
-				}
-				id='title_button--expand'
-				onClickButton={onClickExpandButton}
-			/>
-			<TextField
-				onBlur={handleEditTitleSection}
-				sx={{
-					width: '175px',
-					'& .MuiOutlinedInput-root:hover': {
-						'& > fieldset': {
-							borderColor: 'white',
-						},
-					},
-					'& .MuiOutlinedInput-root.Mui-focused': {
-						'& > fieldset': {
-							borderColor: '#0057B7',
-						},
-					},
-				}}
-				placeholder={'Write a section name'}
-				className='Box__input--addTask'
-				defaultValue={sectionName}
-				onKeyPress={handleKeyPress}
-				inputRef={searchInput}
-			/>
-			<Box sx={{ position: 'relative' }}>
-				<ButtonProjectList
-					icon={<AddIcon style={styles.icon} />}
-					id='title__button--addTask'
-					onClickButton={onClickAddTaskAbove}
-				/>
-				<Typography id='addTask__span--hover'>Add Task</Typography>
-			</Box>
-			<Box sx={{ position: 'relative' }}>
-				<ButtonProjectList
-					icon={<MoreHorizIcon style={styles.icon} />}
-					id='title__button--showMore'
-					onClickButton={handleShowMenuSection}
-				/>
+		<ClickAwayListener onClickAway={handleClickAway}>
+			<Grid item className='title__content '>
 				<Box
-					className='dropMenu--Section'
-					sx={{ border: '1px solid grey', borderRadius: '5px' }}
-					display={isShowMenuSection ? 'block' : 'none'}
+					className='row-drag-handle'
+					onMouseDown={onMouseDown}
+					onMouseUp={onMouseUp}
 				>
-					<ButtonProjectList
-						icon={<ShortTextIcon style={styles.icon} />}
-						id='dropItem__button--addSection'
-						text='Add Section'
-					/>
-					<Box className='drop__block--addSection'>
+					<TooltipCustomize title='drag to move' placement='bottom'>
+						<DragIndicatorSharpIcon
+							style={styles.icon}
+							className='sectionForm__icon'
+						/>
+					</TooltipCustomize>
+				</Box>
+				<ButtonProjectList
+					icon={
+						isExpand ? (
+							<TooltipCustomize title='close tasks' placement='bottom'>
+								<ExpandMoreIcon style={styles.icon} className='sectionForm__icon' />
+							</TooltipCustomize>
+						) : (
+							<TooltipCustomize title='expand tasks' placement='bottom'>
+								<ChevronRightIcon style={styles.icon} className='sectionForm__icon' />
+							</TooltipCustomize>
+						)
+					}
+					id='title_button--expand'
+					onClickButton={onClickExpandButton}
+				/>
+				<TextField
+					onBlur={handleEditTitleSection}
+					sx={{
+						width: '175px',
+						'& .MuiOutlinedInput-root:hover': {
+							'& > fieldset': {
+								borderColor: 'gray',
+							},
+						},
+						'& .MuiOutlinedInput-root.Mui-focused': {
+							'& > fieldset': {
+								borderColor: '#0057B7',
+							},
+						},
+						'& .MuiOutlinedInput-root': {
+							'& > fieldset': {
+								borderColor: 'white',
+								borderRadius: '10px',
+							},
+						},
+						'&': {
+							input: {
+								padding: '10px',
+								fontWeight: 'bold',
+								fontSize: '15px',
+							},
+						},
+						borderColor: 'white',
+					}}
+					placeholder={'Write a section name'}
+					className='Box__input--addTask'
+					defaultValue={sectionName}
+					onKeyPress={handleKeyPress}
+					inputRef={searchInput}
+				/>
+				<Box onClick={onClickAddTaskAbove}>
+					<TooltipCustomize title='add task' placement='bottom'>
+						<AddIcon
+							style={styles.icon}
+							className='sectionForm__icon sectionForm__icon--addTask'
+						/>
+					</TooltipCustomize>
+				</Box>
+				<Box className='sectionForm__menu--addSection'>
+					<TooltipCustomize title='More actions' placement='bottom'>
+						<MoreHorizIcon className='btnOption' onClick={handleShowMenuSection} />
+					</TooltipCustomize>
+					<Box
+						display={isShowMenuSection ? 'block' : 'none'}
+						className='sectionForm__items--addSection'
+					>
 						<ButtonProjectList
 							icon={<ArrowUpwardIcon style={styles.icon} />}
 							id='dropItem__button--addSectionAbove'
@@ -178,13 +219,13 @@ export default function ProjectSectionForm(props) {
 							text='Add section below'
 							onClickButton={onClickAddSectionBelow}
 						/>
+						<ButtonProjectList
+							icon={<DeleteOutlineIcon style={styles.icon} id='button-delSection' />}
+							id='dropItem__button--delSection'
+							text='Archive Section'
+							onClickButton={toggleModal}
+						/>
 					</Box>
-					<ButtonProjectList
-						icon={<DeleteOutlineIcon style={styles.icon} id='button-delSection' />}
-						id='dropItem__button--delSection'
-						text='Archive Section'
-						onClickButton={toggleModal}
-					/>
 					<ConfirmModal
 						show={isShowModalDelete}
 						title='Archive this section'
@@ -197,7 +238,7 @@ export default function ProjectSectionForm(props) {
 						nameBtnConfirm='Archive section'
 					/>
 				</Box>
-			</Box>
-		</Grid>
+			</Grid>
+		</ClickAwayListener>
 	);
 }

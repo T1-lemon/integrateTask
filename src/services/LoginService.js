@@ -16,3 +16,14 @@ export const login = async (data) => {
     }
 }
 
+export const logout = async (userId) => {
+    try {
+        const respone = await requestApi({
+            method: 'post',
+            url: `auth/logout/${userId}`,
+        })
+        return respone
+    } catch (error) {
+        return error.response
+    }
+}

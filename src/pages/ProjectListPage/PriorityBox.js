@@ -7,6 +7,7 @@ import { priorityArr, priorityMenu } from '../../utils/priorityStatus';
 import DisplayStatus from './priority/DisplayStatus';
 import MenuStatus from './priority/MenuStatus';
 import { updatePriorityTaskApi } from '../../redux/actions/TaskAction';
+import { ProgressListener } from '../../components/ProgressTest/Progress';
 
 const styles = {
 	icon: {
@@ -27,24 +28,35 @@ export default function PriorityBox(props) {
 	const handleOpenPopover = event => {
 		setAnchorEl(event.currentTarget);
 	};
-	
+
 	const handleClosePopover = () => {
 		setAnchorEl(null);
 	};
-	
+
 	const open = Boolean(anchorEl);
-	
-	const handleClickPriority = e => {
-		const numberStatus = convertNumber(
-			priorityArr,
-			e.target.outerText.toLowerCase()
-		);
+
+	// const handleClickPriority = e => {
+	// 	const numberStatus = convertNumber(
+	// 		priorityArr,
+	// 		e.target.outerText.toLowerCase()
+	// 	);
+	// 	const taskUpdate = {
+	// 		...task,
+	// 		priorityValue: numberStatus.toString(),
+	// 	};
+	// 	handleClosePopover();
+	// 	dispatch(updatePriorityTaskApi(taskUpdate));
+	// };
+	const handleClickPriority = async value => {
+		const numberStatus = convertNumber(priorityArr, value.toLowerCase());
 		const taskUpdate = {
 			...task,
 			priorityValue: numberStatus.toString(),
 		};
 		handleClosePopover();
-		dispatch(updatePriorityTaskApi(taskUpdate));
+		ProgressListener.emit('start');
+		await dispatch(updatePriorityTaskApi(taskUpdate));
+		ProgressListener.emit('stop');
 	};
 
 	return (

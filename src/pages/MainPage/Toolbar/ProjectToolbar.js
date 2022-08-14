@@ -1,11 +1,9 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import './ProjectToolbar.css';
 
 export default function ProjectToolbar(props) {
-	const { getEntityPath } = props;
-
 	const currentProject = useSelector(
 		state => state.ProjectReducer.currentProject
 	);
@@ -14,12 +12,7 @@ export default function ProjectToolbar(props) {
 		<div className='nav__bar--container'>
 			<h2 className='title__nav'>{currentProject.projectName}</h2>
 			<ul className='nav__bar-project'>
-				<li
-					className='nav-item '
-					onClick={() => {
-						getEntityPath('list');
-					}}
-				>
+				<li className='nav-item '>
 					<NavLink
 						className='nav__link-project line '
 						to={`/main-page/${currentProject._id}/list`}
@@ -27,12 +20,7 @@ export default function ProjectToolbar(props) {
 						<span>List</span>
 					</NavLink>
 				</li>
-				<li
-					className='nav-item '
-					onClick={() => {
-						getEntityPath('board');
-					}}
-				>
+				<li className='nav-item '>
 					<NavLink
 						className='nav__link-project line'
 						to={`/main-page/${currentProject._id}/board`}
@@ -40,7 +28,15 @@ export default function ProjectToolbar(props) {
 						<span>Board</span>
 					</NavLink>
 				</li>
-				
+
+				<li className='nav-item '>
+					<NavLink
+						className='nav__link-project line'
+						to={`/main-page/${currentProject._id}/listArchive`}
+					>
+						<span>List Archive</span>
+					</NavLink>
+				</li>
 			</ul>
 		</div>
 	);

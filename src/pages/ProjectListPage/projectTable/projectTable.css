@@ -21,3 +21,29 @@
 .smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
 	overflow: visible;
 }
+
+.projectTable__box--addSection {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	width: 140px;
+	cursor: pointer;
+	background-color: #F9F8F8;
+	padding: 8px;
+	border-radius: 5px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	color: #6d6e6f;
+}
+
+.projectTable__box--addSection:hover {
+	background-color: #F3F1F1;
+}
+
+.projectTable__icon--addSection {
+	font-size: 20px !important;
+}
+.projectTable__typo--addSection {
+	font-weight: bold !important;
+	font-size: 15px !important;
+}

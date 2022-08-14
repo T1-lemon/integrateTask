@@ -9,13 +9,14 @@ import './dueDateForm.css';
 import { convertDateFromDataBase, showDateInDateInput } from '../../utils/date';
 import ButtonProjectList from '../../components/ButtonProjectList/ButtonProjectList';
 import { setDateTaskApi } from '../../redux/actions/TaskAction';
+import { ProgressListener } from '../ProgressTest/Progress';
 
 export default function DueDateForm(props) {
-	const {startDate, dueDate, task,onClosePopover } = props;
+	const { startDate, dueDate, task, onClosePopover } = props;
 
 	const dispatch = useDispatch();
 
-	const [isFocusDueDate, setIsFocusDueDate] = useState(true);
+	const [isFocusDueDate, setIsFocusDueDate] = useState(false);
 
 	const [startDateCalendar, setStartDateCalendar] = useState(
 		convertDateFromDataBase(startDate)
@@ -25,23 +26,24 @@ export default function DueDateForm(props) {
 	);
 
 	const handleClickStartDate = () => {
-		setIsFocusDueDate(true);
+		setIsFocusDueDate(false);
 	};
 
 	const handleClickDueDate = () => {
-		setIsFocusDueDate(false);
+		setIsFocusDueDate(true);
 	};
 
 	const handleChangeDueDate = value => {
 		const newDueDate = showDateInDateInput(value.toString().slice(0, 15));
 
-		if (isFocusDueDate) {
+		if (!isFocusDueDate) {
 			setStartDateCalendar(newDueDate);
-			setIsFocusDueDate(false);
+			setIsFocusDueDate(true);
 			return;
 		}
+
 		setDueDateCalendar(newDueDate);
-		setIsFocusDueDate(true);
+		setIsFocusDueDate(false);
 	};
 
 	const handleClickClearAll = () => {
@@ -49,14 +51,24 @@ export default function DueDateForm(props) {
 		setDueDateCalendar('');
 	};
 
-	const handleSubmitDate = () => {
-		const taskUpdate = {
+	const handleSubmitDate = async () => {
+		let taskUpdate = {
 			...task,
 			startDate: startDateCalendar,
 			dueDate: dueDateCalendar,
 		};
+
+		if (!dueDateCalendar) {
+			taskUpdate = {
+				...task,
+				startDate: '',
+				dueDate: startDateCalendar,
+			};
+		}
 		onClosePopover();
-		dispatch(setDateTaskApi(taskUpdate));
+		ProgressListener.emit('start');
+		await dispatch(setDateTaskApi(taskUpdate));
+		ProgressListener.emit('stop');
 	};
 
 	return (

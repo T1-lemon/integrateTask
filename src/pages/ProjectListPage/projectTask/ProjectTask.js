@@ -18,10 +18,11 @@ import {
 	updatePriorityTaskApi,
 	updateTitleTaskApi,
 } from '../../../redux/actions/TaskAction';
-import { priorityArr, priorityMenu } from '../../../utils/priorityStatus';
 import AssigneeBox from '../AssigneeBox';
 import DueDateBox from '../DueDateBox';
 import PriorityBox from '../PriorityBox';
+import { TooltipCustomize } from '../../../components/ToolTip/ToolTip';
+import { ProgressListener } from '../../../components/ProgressTest/Progress';
 
 const styles = {
 	task: {
@@ -29,6 +30,8 @@ const styles = {
 		borderLeft: 'none',
 		borderBottom: 'none',
 		fontSize: '14px',
+		display: 'flex',
+		alignItems: 'center',
 	},
 	icon: {
 		fontSize: '15px',
@@ -83,9 +86,11 @@ export default function ProjectTask(props) {
 		setState({ ...state, right: !state.right });
 	};
 
-	const handelChangeCheckedStatus = e => {
+	const handelChangeCheckedStatus = async e => {
 		setIsChecked(!isChecked);
-		dispatch(completeTaskApi(_id));
+		ProgressListener.emit('start');
+		await dispatch(completeTaskApi(_id));
+		ProgressListener.emit('stop');
 	};
 
 	const handlePressKeyTitleTask = value => {
@@ -94,10 +99,13 @@ export default function ProjectTask(props) {
 		}
 	};
 
-	const handleEditTitleTask = e => {
+	const handleEditTitleTask = async e => {
 		const titleTask = e.target.value;
 		const titleTaskEdit = !titleTask.trim() ? 'Untitled task' : titleTask;
-		dispatch(updateTitleTaskApi(_id, titleTaskEdit));
+		
+		ProgressListener.emit('start');
+		await dispatch(updateTitleTaskApi(_id, titleTaskEdit));
+		ProgressListener.emit('stop');
 
 		e.target.value = titleTaskEdit;
 	};
@@ -113,10 +121,12 @@ export default function ProjectTask(props) {
 			<Grid item xs={4} style={styles.task} className='taskName__block'>
 				<Box className='taskName__block--input'>
 					<Box className='row-drag-handle'>
-						<ButtonProjectList
-							icon={<DragIndicatorSharpIcon style={styles.icon} />}
-							id='title__icon--hover'
-						/>
+						<TooltipCustomize title='drag to move' placement='bottom'>
+							<DragIndicatorSharpIcon
+								style={styles.icon}
+								className='sectionForm__icon'
+							/>
+						</TooltipCustomize>
 					</Box>
 					<Checkbox
 						label='CheckCircleOutlineIcon'

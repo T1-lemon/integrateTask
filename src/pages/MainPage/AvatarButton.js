@@ -10,17 +10,21 @@ import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import '../MainPage/avatarButton.css';
 import { toggleFormWorkspace } from '../../redux/actions/toggleAction';
-import { currentUserRedux } from '../../redux/selector/authSeclector';
 import * as workspaceService from '../../services/workspaceService';
+import * as storage from '../../utils/storage';
+import { logout } from '../../services/LoginService';
+import { ProgressListener } from '../../components/ProgressTest/Progress';
 
 let workspace = [];
 
 export default function AvatarButton() {
 	const dispatch = useDispatch();
-	const currentUser = useSelector(currentUserRedux);
+	const navigate = useNavigate();
+	const currentUser = storage.getValueStorage('auth');
 	useEffect(() => {
 		const fetchGetAllWorkspaceApi = async () => {
 			const userEmail = currentUser.email;
@@ -45,11 +49,30 @@ export default function AvatarButton() {
 		setAnchorElUser(null);
 		dispatch(toggleFormWorkspace(true));
 	};
+
+	const handleLogOut = async () => {
+		handleCloseUserMenu();
+		const userId = currentUser._id;
+		ProgressListener.emit('start');
+		await logout(userId);
+		ProgressListener.emit('stop');
+		navigate('/');
+		storage.deleteValueStorage('auth');
+	};
+
 	return (
 		<div>
 			<Tooltip title='Open settings'>
 				<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-					<Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+					<Avatar>
+						{currentUser.username
+							? `${currentUser.username
+									.slice(0, 1)
+									.toUpperCase()}${currentUser.username.slice(1, 2)}`
+							: `${currentUser.userName
+									.slice(0, 1)
+									.toUpperCase()}${currentUser.userName.slice(1, 2)}`}
+					</Avatar>
 				</IconButton>
 			</Tooltip>
 			<Menu
@@ -99,7 +122,7 @@ export default function AvatarButton() {
 							Create new workspace
 						</Typography>
 					</MenuItem>
-					<MenuItem onClick={handleCloseUserMenu}>
+					<MenuItem onClick={handleLogOut}>
 						<Typography className='item__typography--logout'>Logout</Typography>
 					</MenuItem>
 				</Box>

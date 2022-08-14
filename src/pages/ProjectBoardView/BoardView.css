@@ -199,7 +199,7 @@ body::-webkit-scrollbar {
 }
 
 .icon__option.css-i4bv87-MuiSvgIcon-root {
-	font-size: 20px;
+	font-size: 16px;
 	margin-right: 4px;
 	/* stroke: black; */
 	-webkit-text-stroke: 1px white;
@@ -260,6 +260,10 @@ body::-webkit-scrollbar {
 	border-color: #767676;
 }
 
+.task__newItem .icon__assign__date{
+	margin-right: 8px;
+}
+
 .task__item.Mui-selected {
 	background-color: var(--color-selected-background);
 	border: 2px solid var(--color-outline-input);
@@ -309,7 +313,7 @@ body::-webkit-scrollbar {
 	border-radius: 8px;
 	background-color: transparent;
 	font-size: 14px;
-	cursor: pointer;
+	cursor: auto;
 	overflow-y: hidden;
 	resize: none;
 	color: var(--color--text);
@@ -336,7 +340,6 @@ body::-webkit-scrollbar {
 	border-radius: 50%;
 	padding: 2px;
 	border: 1px dashed;
-	margin-right: 8px;
 	color: var(--color-text-weak);
 }
 
@@ -345,7 +348,8 @@ body::-webkit-scrollbar {
 }
 
 .icon__assign__date.css-i4bv87-MuiSvgIcon-root {
-	font-size: 16px;
+	font-size: 18px;
+	
 }
 
 .btnOption__box {
@@ -375,4 +379,9 @@ body::-webkit-scrollbar {
 	color: black;
 	background-color: #e2e2e2;
 	cursor: pointer;
+}
+
+.dueDate__value.css-ahj2mt-MuiTypography-root {
+	font-size: 12px;
+	color: var(--color-text-weak);
 }

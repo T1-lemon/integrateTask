@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import { getProjectApi } from '../../../redux/actions/ProjectAction';
+import WorkIcon from '@mui/icons-material/Work';
 
 const styles = {
 	boxProjectContainer: {
@@ -53,7 +54,7 @@ export default function ArchiveProjects() {
 			<Box display={showArchiveProject ? 'block' : 'none'}>
 				{projectArchives.map((project, index) => {
 					let href = `/main-page/${project._id}/list`;
-					let keyRender = `${project.projectName} ${index}`;
+					let keyRender = `${project._id}`;
 
 					return (
 						<ListItem className='listItem__hover' key={keyRender} disablePadding>
@@ -66,7 +67,8 @@ export default function ArchiveProjects() {
 								}}
 							>
 								<Box sx={styles.boxProjectContainer}>
-									<div style={styles.boxProject}></div>
+									<WorkIcon sx={{ fontSize: '16px', marginRight: '10px' }} />
+
 									<ListItemText
 										sx={{
 											'& .css-10hburv-MuiTypography-root': { fontSize: '12px' },

@@ -8,12 +8,28 @@ import { addTaskAction } from '../../redux/actions/ProjectAction';
 import { useSelector, useDispatch } from 'react-redux';
 import Task from './Task';
 import FormNewTask from './FormNewTask';
-import { updateDropTask } from '../../redux/actions/TaskAction';
+import {
+	createTaskApi,
+	updateDragTask,
+	updateDropTask,
+	updateSectionIdTaskDragApi,
+	updateTaskOrderInSectionApi,
+} from '../../redux/actions/TaskAction';
+import { filterTaskList } from '../ProjectListPage/projectSection/ProjectSection';
 
 export default function ListTask(props) {
-	const dispatch = useDispatch();
+	const {
+		section,
+		isDisplayFormNewTaskTop,
+		isDisplayFormNewTaskBottom,
+		closeNewTaskForm,
+		isAddTask,
+	} = props;
 
-	const { section, isDisplayFormNewTaskTop, isDisplayFormNewTaskBottom } = props;
+	const dispatch = useDispatch();
+	const filterSelector = useSelector(state => state.filterReducer);
+
+	const currentUser = useSelector(state => state.authReducer.currentUser);
 
 	const arrTaskInProject = useSelector(state => state.TaskReducer.arrTask);
 
@@ -21,27 +37,70 @@ export default function ListTask(props) {
 		task => task.sectionId === section._id
 	);
 
-	// console.log(`arrTaskInSection ${section.sectionName}`,arrTaskInSection);
+	// console.log(`arrTaskInSection ${section.sectionName}`, arrTaskInSection);
 
 	const arrTaskOrder = useSelector(state => state.TaskReducer.taskOrders);
 
-	const taskOrderInSection = arrTaskOrder.filter(
-		item => item.sectionId === section._id
-	);
+	// console.log('arrTaskOrder',arrTaskOrder);
 
-	const listTask = mapOrder(arrTaskInSection, taskOrderInSection, '_id');
+	//task order trong section hiện tại
+	const taskOrderInSection = arrTaskOrder
+		? arrTaskOrder.find(item => item.sectionId === section._id)
+		: {};
 
-	const handleSubmit = nameTask => {
-		dispatch(addTaskAction(nameTask, section.section_id));
+	// console.log('arrTaskOrderInSection', taskOrder);
+
+	const listTask =
+		taskOrderInSection && taskOrderInSection.taskOrder.length && arrTaskInSection
+			? mapOrder(arrTaskInSection, taskOrderInSection.taskOrder, '_id')
+			: [];
+
+	const listTaskUnarchive = listTask && listTask.length ? listTask.filter(task => !task.archivedTask) :[];
+
+
+	const newTaskList = filterTaskList(listTaskUnarchive, filterSelector);
+
+	const handleCreateTask = nameTask => {
+		if (nameTask === '') {
+			closeNewTaskForm();
+			return;
+		}
+
+		const taskCreate = {
+			taskName: nameTask,
+			createBy: currentUser.email,
+			projectId: section.projectId,
+			sectionId: section._id,
+		};
+
+		closeNewTaskForm();
+		dispatch(createTaskApi(taskCreate, taskOrderInSection.taskOrder, isAddTask));
 	};
 
-	const handleBlur = nameTask => {
-		dispatch(addTaskAction(nameTask, section.section_id));
-		// setDisplayFormNewTaskBottom(false);
+	const onTaskDrop = async (dropResult, section) => {
+		let listTaskInSection = [...listTask];
+
+		const { removedIndex, addedIndex, payload } = dropResult;
+		let newTasks = applyDrag(listTaskInSection, dropResult);
+		let newTaskOrder = newTasks.map(task => task._id);
+
+		if (removedIndex !== null) {
+			//khi drag chi can update task order tai section drag
+			dispatch(updateDragTask(section._id, newTaskOrder));
+			await dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id));
+		}
+
+		if (addedIndex !== null) {
+			//khi drop update task order tai section drop
+			//update section id cua task keo tha bang section drop id
+			dispatch(updateDropTask(section._id, newTaskOrder, payload));
+			await dispatch(updateSectionIdTaskDragApi(payload, section._id));
+			await dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id));
+		}
 	};
 
 	const renderListTask = () => {
-		return listTask.map((task, index) => {
+		return newTaskList.map((task, index) => {
 			return (
 				<Draggable key={task._id}>
 					<Task task={task} />
@@ -50,44 +109,14 @@ export default function ListTask(props) {
 		});
 	};
 
-	const onTaskDrop = (dropResult, section) => {
-		const { removedIndex, addedIndex, payload } = dropResult;
-		console.log(dropResult)
-		if (removedIndex !== null) {
-			console.log('task drag',payload);
-
-			// let newTasks = applyDrag(section.tasks, dropResult);
-			// console.log(payload);
-			// let newTaskOrder = newTasks.map(task => task.task_id);
-			// dispatch(updateDropTask(section.section_id, newTaskOrder, newTasks));
-		}
-
-		if (addedIndex !== null) {
-			console.log('section sau khi tha',section._id);
-			console.log('task drop',payload);
-			dispatch(updateDropTask(section._id,payload));
-
-		}
-	};
-
 	return (
 		<Box component='div' className='list__task-container'>
 			<List className='list__tasks'>
 				<FormNewTask
-					// handleSubmit={handleSubmit}
-					// handleBlur={handleBlur}
+					handleBlur={handleCreateTask}
 					isDisplayFormAddTask={isDisplayFormNewTaskTop}
 				/>
 				<Container
-					// onDragStart={e => console.log('drag started', e)}
-					// onDragEnd={e => console.log('drag end', e)}
-					// onDragEnter={() => {
-					// 	//   console.log("drag enter:", column.id);
-					// }}
-					// onDragLeave={() => {
-					// 	//   console.log("drag leave:", column.id);
-					// }}
-					// onDropReady={p => console.log('Drop ready: ', p)}
 					groupName='col'
 					onDrop={dropResult => {
 						onTaskDrop(dropResult, section);
@@ -106,8 +135,7 @@ export default function ListTask(props) {
 				</Container>
 
 				<FormNewTask
-					handleSubmit={handleSubmit}
-					handleBlur={handleBlur}
+					handleBlur={handleCreateTask}
 					isDisplayFormAddTask={isDisplayFormNewTaskBottom}
 				/>
 			</List>

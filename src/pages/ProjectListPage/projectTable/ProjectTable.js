@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { useState, useEffect } from 'react';
 import { Container, Draggable } from 'react-smooth-dnd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
 
 import ProjectSection from '../projectSection/ProjectSection';
 import { applyDrag } from '../utils/DragAndDrop';
 import { mapOrder } from '../../../utils/sort';
-
 import './projectTable.css';
 import {
 	getProjectApi,
@@ -17,14 +17,17 @@ import {
 	updateDropSectionApi,
 } from '../../../redux/actions/ProjectAction';
 import {
+	addSectionApi,
 	getAllSectionApi,
-	updateTaskOrderInSectionApi,
 } from '../../../redux/actions/SectionAction';
 import {
 	getAllTaskInProjectApi,
 	getAllTaskOrderAction,
 	updateDropTask,
+	updateTaskOrderInSectionApi,
 } from '../../../redux/actions/TaskAction';
+import ProjectAddSectionForm from '../projectSection/ProjectAddSectionForm';
+import { ProgressListener } from '../../../components/ProgressTest/Progress';
 
 const headerTable = [
 	'Task name',
@@ -51,11 +54,13 @@ const styles = {
 	},
 	bodyTable: {
 		marginTop: '150px',
-	}
+	},
 };
 export default function ProjectTable() {
 	const dispatch = useDispatch();
 	const { projectId } = useParams();
+	const [isAddSection, setIsAddSection] = useState(false);
+
 	const { sectionOrder } = useSelector(
 		state => state.ProjectReducer.currentProject
 	);
@@ -85,36 +90,64 @@ export default function ProjectTable() {
 		dispatchArrTaskOrder(sections);
 	}, [sections]);
 
-	const dispatchArrTaskOrder = sections => {
+	const dispatchArrTaskOrder = async sections => {
 		const taskOrderInProject = sections.map(section => {
 			const sectionId = section._id;
 			const taskOrder = section.taskOrder;
 			return { sectionId, taskOrder };
 		});
-
-		dispatch(getAllTaskOrderAction(taskOrderInProject));
+		ProgressListener.emit('start');
+		await dispatch(getAllTaskOrderAction(taskOrderInProject));
+		ProgressListener.emit('stop');
 	};
 
-	const handleSectionDrop = dropResult => {
+	const handleSectionDrop = async dropResult => {
 		let newSections = applyDrag(sectionsUnarchive, dropResult);
 		let newSectionOrder = newSections.map(section => section._id);
-		dispatch(updateDropSectionApi(newSectionOrder, projectId));
 		dispatch(updateDropSection(newSectionOrder));
+		ProgressListener.emit('start');
+		await dispatch(updateDropSectionApi(newSectionOrder, projectId));
+		ProgressListener.emit('stop');
 	};
 
-	const handleTaskDrop = (dropResult, section, taskList) => {
+	const handleTaskDrop = async (dropResult, section, taskList) => {
 		const { addedIndex, payload } = dropResult;
 		if (addedIndex !== null) {
 			let newTasks = applyDrag(taskList, dropResult);
 			let newTaskOrder = newTasks.map(task => task._id);
-			dispatch(updateDropTask(section._id, newTaskOrder, payload));
-			dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id));
+			await dispatch(updateDropTask(section._id, newTaskOrder, payload));
+			ProgressListener.emit('start');
+			await dispatch(updateTaskOrderInSectionApi(newTaskOrder, section._id));
+			ProgressListener.emit('stop');
 		}
+	};
+
+	const handleShowFormAddSection = () => {
+		setIsAddSection(true);
+	};
+
+	const handleAddSection = async e => {
+		const nameSection = e.target.value;
+		const sectionNameInput = !nameSection.trim()
+			? 'Untitled section'
+			: nameSection;
+
+		const newSection = {
+			sectionName: sectionNameInput,
+			taskOrder: [],
+			projectId: projectId,
+		};
+		e.target.value = sectionNameInput;
+		setIsAddSection(false);
+		ProgressListener.emit('start');
+		await dispatch(addSectionApi(newSection));
+		ProgressListener.emit('stop');
+		e.target.value = '';
 	};
 
 	return (
 		<Box sx={{ mt: 2 }}>
-			<Box >
+			<Box>
 				<Grid container style={styles.headerTable} drawerWidth='240px'>
 					<Grid item xs={4} style={styles.headerTitleTable}>
 						Task name
@@ -168,6 +201,21 @@ export default function ProjectTable() {
 						);
 					})}
 				</Container>
+			</Box>
+			<Box>
+				<ProjectAddSectionForm
+					isDisplay={isAddSection}
+					onSubmit={handleAddSection}
+				/>
+			</Box>
+			<Box
+				className='projectTable__box--addSection'
+				onClick={handleShowFormAddSection}
+			>
+				<AddIcon className='projectTable__icon--addSection' />
+				<Typography className='projectTable__typo--addSection'>
+					Add Section
+				</Typography>
 			</Box>
 		</Box>
 	);

@@ -1,16 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { List, ListItem } from '@mui/material';
-import MoreOptionTask from './MoreOptionTask';
 import Box from '@mui/material/Box';
 import { TooltipCustomize } from '../../components/ToolTip/ToolTip';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import CompleteTask from './CompleteTask';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export default function FormNewTask(props) {
-	const { isDisplayFormAddTask, handleSubmit, handleBlur } = props;
+	const { isDisplayFormAddTask, handleBlur } = props;
 
 	const [nameTask, setnameTask] = useState('');
 
@@ -29,7 +27,7 @@ export default function FormNewTask(props) {
 
 	const handleEnter = event => {
 		if (event.keyCode == 13) {
-			handleSubmit(nameTask);
+			event.target.blur();
 		}
 	};
 
@@ -38,7 +36,7 @@ export default function FormNewTask(props) {
 			<ListItem className='task__item task__newItem'>
 				<Box className='board__card-title'>
 					<Box className='board__card-title--form'>
-						<CheckCircleOutlineIcon className='icon__checkCircle' />
+						{/* <CheckCircleOutlineIcon className='icon__checkCircle' /> */}
 
 						<TextareaAutosize
 							maxRows={5}
@@ -57,7 +55,7 @@ export default function FormNewTask(props) {
 					</Box>
 				</Box>
 
-				<Box>
+				{/* <Box>
 					<TooltipCustomize title='Assign task' placement='bottom'>
 						<PersonOutlineOutlinedIcon className='icon__assign__date' />
 					</TooltipCustomize>
@@ -65,7 +63,7 @@ export default function FormNewTask(props) {
 					<TooltipCustomize title='Add due date' placement='bottom'>
 						<CalendarTodayOutlinedIcon className='icon__assign__date' />
 					</TooltipCustomize>
-				</Box>
+				</Box> */}
 			</ListItem>
 		</Box>
 	);
